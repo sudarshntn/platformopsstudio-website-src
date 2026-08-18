@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>From Commit to Production: GitOps Promotion Workflows with Kargo &amp; Argo CD | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How Kargo complements Argo CD to deliver traceable, safe, automated GitOps promotion workflows from dev to production.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources</span>
+    <h1>From Commit to Production: GitOps Promotion Workflows with Kargo &amp; Argo CD</h1>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container article-body">
+    <p>Promotion between environments is one of the most challenging aspects of continuous delivery when you're operating under GitOps principles. You've got Argo CD doing an excellent job of reconciling your cluster state with what's declared in Git — but how do you actually move a new version of your application from dev to staging to production in a way that's traceable, safe, and automated?</p>
+    <p>That's exactly the problem Kargo was built to solve.</p>
+    <p>In this article, we'll walk through what Kargo is, how it integrates with Argo CD, and how you can design a complete GitOps promotion workflow that takes your application from a freshly pushed container image all the way through to production — with guardrails at every step.</p>
+
+    <h2>The Promotion Gap in GitOps</h2>
+    <p>If you've worked with GitOps for any length of time, you've likely encountered a frustrating irony: GitOps is wonderful at synchronizing desired state to a cluster, but it offers almost no guidance on how to propagate changes from one environment to the next.</p>
+    <p>In a typical Argo CD setup, you might have three Application resources — one each for dev, staging, and production — each pointing at different directories or value files in a Git repository. Promoting a new version means manually (or via CI scripts) updating the image tag in the right file, committing it, and waiting for Argo CD to pick up the change. This works, but it introduces several problems.</p>
+    <p>First, there's no unified view of what version is running where. Second, promotion logic ends up scattered across CI scripts, webhook handlers, and ad-hoc shell commands. Third, there's no built-in concept of verification gates — you can't easily say "only promote to production after staging has been healthy for 24 hours." And finally, rollback becomes a manual Git revert operation rather than a first-class workflow.</p>
+    <p>Kargo addresses all of these concerns by introducing a promotion-native layer on top of the GitOps ecosystem.</p>
+
+    <h2>What Is Kargo?</h2>
+    <p>Kargo is an open-source, continuous promotion platform built and maintained by the creators of the Argo project at Akuity. It's designed specifically to orchestrate the movement of application artifacts — container images, Helm charts, Git commits — through the stages of your application's lifecycle using GitOps principles.</p>
+    <p>Rather than replacing Argo CD, Kargo complements it. Argo CD remains responsible for synchronizing cluster state with Git. Kargo takes over the job of deciding what gets promoted where and when, and then making the corresponding changes in Git so that Argo CD can do what it does best.</p>
+    <p>A few key design decisions make Kargo stand out. It's entirely declarative — your promotion pipelines are defined as Kubernetes custom resources. It's unopinionated about your deployment tooling — it works with Helm, Kustomize, raw manifests, or any combination. And it treats promotion as a first-class, auditable operation rather than a side effect of a CI pipeline.</p>
+
+    <h2>Core Concepts</h2>
+    <p>Kargo introduces a small set of new concepts that are worth understanding before diving into configuration. The terminology is deliberately drawn from logistics and shipping — an analogy that makes the mental model surprisingly intuitive.</p>
+
+    <h3>Projects</h3>
+    <p>A Kargo Project is the top-level unit of organization and tenancy. It maps directly to a Kubernetes namespace and contains all the resources that define one or more promotion pipelines. Projects also serve as the boundary for RBAC rules and policies, such as whether auto-promotion is permitted for certain stages.</p>
+
+    <h3>Warehouses</h3>
+    <p>A Warehouse is where promotable artifacts originate. It subscribes to one or more artifact sources — container image registries, Git repositories, or Helm chart repositories — and watches for new versions. When a new artifact revision is discovered, the Warehouse packages the latest revisions of all its subscribed artifacts together into a new piece of Freight.</p>
+    <p>Think of a Warehouse as a loading dock that receives shipments of new software versions and prepares them for distribution through your pipeline.</p>
+
+    <h3>Freight</h3>
+    <p>Freight is Kargo's most distinctive concept. A single piece of Freight is a "meta-artifact" — a set of references to specific versions of one or more artifacts. For example, a piece of Freight might reference version v1.5.2 of your container image and commit abc123 from your config repository. The key insight is that these artifacts travel together as a unit through the promotion pipeline, ensuring that related changes are always promoted in lockstep.</p>
+    <p>Every piece of Freight is represented as an immutable Kubernetes resource. It gets a SHA-1-based name for programmatic use and a human-friendly alias (like <code>fruitful-ferret</code>) for easy identification in the UI and CLI.</p>
+
+    <h3>Stages</h3>
+    <p>Stages are the most important concept in Kargo. A Stage represents a specific instance of your application — typically corresponding to what you'd informally call an "environment" like dev, staging, or production. Kargo deliberately avoids the term "environment" because a stage's name denotes its purpose, not necessarily its physical location.</p>
+    <p>Stages can be linked together to form a promotion pipeline. Each stage declares what Freight it accepts (either directly from a Warehouse or from upstream stages) and defines a promotion template that describes the steps to execute when Freight arrives. These steps typically involve cloning a Git repo, updating image tags or Helm values, committing the changes, pushing them, and then triggering an Argo CD sync.</p>
+
+    <h3>Promotions</h3>
+    <p>A Promotion is simply a request to move a specific piece of Freight into a specific Stage. Promotions can be triggered manually through the UI or CLI, or they can happen automatically based on policies you define at the project level.</p>
+
+    <h2>How Kargo and Argo CD Work Together</h2>
+    <p>The integration between Kargo and Argo CD follows a clean separation of concerns. Here's the typical flow:</p>
+    <ol>
+      <li>CI builds and pushes a new container image to a registry.</li>
+      <li>Kargo's Warehouse detects the new image version and creates a new Freight resource.</li>
+      <li>A Stage picks up the Freight (either via auto-promotion or manual trigger) and executes its promotion template.</li>
+      <li>The promotion template clones your GitOps repo, updates the relevant configuration (image tags, Helm values, etc.), commits the change, and pushes it back.</li>
+      <li>Argo CD detects the Git change and synchronizes the cluster to match the new desired state.</li>
+      <li>Optional verification runs (health checks, smoke tests, analysis templates) to confirm the promotion was successful.</li>
+      <li>The Freight is marked as verified in this stage, making it eligible for promotion to the next stage in the pipeline.</li>
+    </ol>
+    <p>This cycle repeats at each stage, with Kargo managing the flow and Argo CD handling the actual deployment. The Argo CD Application resources need a special annotation — <code>kargo.akuity.io/authorized-stage</code> — to ensure that only the designated Kargo stage can trigger updates to that application.</p>
+    <p>Let's walk through building a three-stage promotion pipeline (dev → staging → prod) for a typical microservice.</p>
+    <p><em>Refer to my Medium post for the full walkthrough and manifests.</em></p>
+
+    <div class="tag-list">
+      <span>#GitOps</span><span>#Kargo</span><span>#ArgoCD</span><span>#Kubernetes</span><span>#ContinuousDelivery</span><span>#PlatformEngineering</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="the-mcp-orchestrator-the-conductor-your-ai-stack-has-been-missing.html">
+        <div class="post-card-media"><span class="tag">#MCP · AI Infrastructure</span></div>
+        <div class="post-card-body">
+          <h3>The MCP Orchestrator: The Conductor Your AI Stack Has Been Missing</h3>
+          <p>A single control plane for a production-grade agentic system.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="empowering-teams-training-and-onboarding-in-the-gitops-framework.html">
+        <div class="post-card-media"><span class="tag">GitOps · Book</span></div>
+        <div class="post-card-body">
+          <h3>Empowering Teams: Training and Onboarding in the GitOps Framework</h3>
+          <p>A practical guide to the human side of GitOps adoption.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="embracing-agile-platform-engineering-revolutionizes-project-management.html">
+        <div class="post-card-media"><span class="tag">Agile · Platform Engineering</span></div>
+        <div class="post-card-body">
+          <h3>Embracing Agile: Platform Engineering Revolutionizes Project Management</h3>
+          <p>Platform engineering as the stage for the agile dance.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
