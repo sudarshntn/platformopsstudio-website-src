@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Seamless API Management: Integrating Istio Ambient Mesh with Azure APIM | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Combining Istio Ambient Mesh with Azure API Management for zero-trust, sidecar-less service mesh plus enterprise API gateway capabilities.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources · From Medium</span>
+    <h1>Seamless API Management: Integrating Istio Ambient Mesh with Azure APIM</h1>
+    <p class="date">Published on Medium · Apr 11, 2025</p>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-istio-azure-apim.svg" alt="Istio Ambient Mesh and Azure APIM banner">
+    </div>
+  </div>
+  <div class="container article-body">
+    <div class="medium-callout">
+      <p>The full architecture and setup steps are on Medium.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/seamless-api-management-integrating-istio-ambient-mesh-with-azure-apim-4058fa213f4e" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
+
+    <p>Service meshes like <strong>Istio Ambient</strong> give you sidecar-free, secure, low-overhead traffic management for cloud-native microservices. <strong>Azure API Management (APIM)</strong> is a mature solution for exposing, managing, and securing APIs at scale. This article covers integrating the two so you get Istio's L7 policies, telemetry, and zero-trust security together with APIM's gateway and management capabilities — whether you're running a single AKS cluster or a multi-cloud footprint.</p>
+
+    <h2>Why combine them</h2>
+    <ul>
+      <li>API gateway-level security via tokens, rate-limiting, and logging (APIM)</li>
+      <li>Sidecar-less L7 routing and telemetry (Istio Ambient)</li>
+      <li>Centralized API visibility for better developer productivity</li>
+      <li>Zero-trust networking with mTLS and fine-grained policies</li>
+    </ul>
+
+    <h2>How the pieces fit</h2>
+    <p>The architecture combines Istio Ambient's ztunnel and L7 proxies with Azure APIM acting as the public entry point. Traffic arriving at APIM flows into the mesh, where it's processed according to Ambient's security and observability policies — giving you intelligent ingress, API-level management, and secure service-to-service communication in one design.</p>
+
+    <p>The full walkthrough — deploying APIM in front of an AKS cluster, labeling namespaces for Ambient mode, and exposing services through the Istio Gateway API — is in the Medium post linked above.</p>
+
+    <div class="tag-list">
+      <span>#IstioAmbient</span><span>#AzureAPIM</span><span>#AKS</span><span>#ServiceMesh</span><span>#CloudNative</span><span>#ZeroTrust</span><span>#APIManagement</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="bridging-the-mesh-integrating-istio-ambient-with-kong-konnect-and-kong-gateway.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-istio-kong.svg" alt=""><span class="tag">Istio Ambient · Kong</span></div>
+        <div class="post-card-body">
+          <h3>Bridging the Mesh: Istio Ambient with Kong Konnect and Kong Gateway</h3>
+          <p>Integrating Istio Ambient Mesh on AKS with Kong Gateway and Konnect.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="blueprint-for-success-designing-scalable-azure-subscriptions-the-right-way.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-azure-subscriptions.svg" alt=""><span class="tag">Azure · Cloud Governance</span></div>
+        <div class="post-card-body">
+          <h3>Blueprint for Success: Designing Scalable Azure Subscriptions the Right Way</h3>
+          <p>Establish cloud governance, security, and scalability from day one.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="turning-nginx-open-source-into-a-lightweight-api-gateway-using-lua.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-nginx-lua-gateway.svg" alt=""><span class="tag">NGINX · Lua · API Gateway</span></div>
+        <div class="post-card-body">
+          <h3>Turning NGINX Open Source into a Lightweight API Gateway Using Lua</h3>
+          <p>How to turn NGINX into a scriptable API gateway with Lua.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

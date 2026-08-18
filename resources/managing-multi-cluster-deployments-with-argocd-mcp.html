@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Managing Multi-Cluster Deployments with ArgoCD MCP | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Using ArgoCD Multi-Cluster Projects (MCP) to centrally govern GitOps deployments across distributed Kubernetes clusters.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources · From Medium</span>
+    <h1>Managing Multi-Cluster Deployments with ArgoCD MCP</h1>
+    <p class="date">Published on Medium · May 29, 2025</p>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-argocd-mcp-multicluster.svg" alt="ArgoCD Multi-Cluster Projects banner">
+    </div>
+  </div>
+  <div class="container article-body">
+    <div class="medium-callout">
+      <p>Full CLI steps and sample manifests are on Medium.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/managing-multi-cluster-deployments-with-argocd-mcp-43c37fa90c68" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
+
+    <p>As organizations scale globally, balancing hybrid cloud strategy, regulatory requirements, and fault tolerance, multi-cluster Kubernetes management stops being a nice-to-have and becomes a mission-critical necessity. <strong>ArgoCD Multi-Cluster Projects (MCP)</strong> give you a way to define a single ArgoCD project that spans multiple clusters — centralizing control without giving up per-cluster autonomy.</p>
+
+    <h2>What an MCP project gives you</h2>
+    <ul>
+      <li>Applications deployed across different clusters from one ArgoCD instance</li>
+      <li>Access controls governing who can deploy and manage each application</li>
+      <li>Resource whitelisting and blacklisting per project</li>
+      <li>Source and destination restrictions — where code comes from, and where it's allowed to land</li>
+    </ul>
+
+    <p>In practice, that means you can deploy to staging, dev, and production clusters from a single ArgoCD control plane, keep environments logically separated while staying on one consistent GitOps workflow, and apply governance, RBAC, and compliance rules uniformly across all of them.</p>
+
+    <h2>How it's wired together</h2>
+    <p>ArgoCD connects to external clusters as registered destinations (<code>argocd cluster add</code>), and each Application manifest specifies its target cluster and namespace via a <code>destination</code> field. An MCP project then layers access rules on top, allowing or denying which clusters a given project's applications are permitted to touch.</p>
+
+    <p>The full walkthrough — installing ArgoCD, registering clusters, and defining the project YAML — is in the Medium post linked above.</p>
+
+    <div class="tag-list">
+      <span>#ArgoCD</span><span>#GitOps</span><span>#MultiCluster</span><span>#Kubernetes</span><span>#PlatformEngineering</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="mastering-gitops-argocd-deployment-patterns-for-scalable-kubernetes-delivery.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-argocd-deployment-patterns.svg" alt=""><span class="tag">GitOps · ArgoCD</span></div>
+        <div class="post-card-body">
+          <h3>Mastering GitOps: ArgoCD Deployment Patterns for Scalable Kubernetes Delivery</h3>
+          <p>Common GitOps-based deployment patterns using ArgoCD.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="gitops-release-management-building-enterprise-promotion-pipelines-with-kargo-and-argo-cd.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-gitops-release-management.svg" alt=""><span class="tag">GitOps · Kargo · Argo CD</span></div>
+        <div class="post-card-body">
+          <h3>GitOps Release Management: Enterprise Promotion Pipelines with Kargo and Argo CD</h3>
+          <p>How platform teams automate safe Dev → Stage → Production promotions.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="blueprint-for-success-designing-scalable-azure-subscriptions-the-right-way.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-azure-subscriptions.svg" alt=""><span class="tag">Azure · Cloud Governance</span></div>
+        <div class="post-card-body">
+          <h3>Blueprint for Success: Designing Scalable Azure Subscriptions the Right Way</h3>
+          <p>Establish cloud governance, security, and scalability from day one.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

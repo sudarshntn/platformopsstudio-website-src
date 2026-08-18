@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GitOps Release Management: Enterprise Promotion Pipelines with Kargo and Argo CD | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How platform teams automate safe Dev → Stage → Production promotions in Kubernetes using Kargo and Argo CD.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources · From Medium</span>
+    <h1>GitOps Release Management: Building Enterprise Promotion Pipelines with Kargo and Argo CD</h1>
+    <p class="date">Published on Medium · Mar 5, 2026</p>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-gitops-release-management.svg" alt="GitOps Release Management banner">
+    </div>
+  </div>
+  <div class="container article-body">
+    <div class="medium-callout">
+      <p>This is a member-only story on Medium — the excerpt below is free to read here.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/gitops-release-management-building-enterprise-promotion-pipelines-with-kargo-and-argo-cd-c0864c3d2277" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
+
+    <p>GitOps made Git the single source of truth for Kubernetes delivery, and Argo CD does an excellent job of continuously reconciling cluster state against what's declared in a repo. What it doesn't solve on its own is <em>release promotion</em> — the structured, governed movement of an artifact from dev to staging to production with traceability and approval gates along the way.</p>
+
+    <p>That's the gap this article walks through, using <strong>Kargo</strong> — Akuity's open-source continuous promotion platform — as the missing layer on top of Argo CD.</p>
+
+    <h2>Why traditional GitOps promotion breaks down</h2>
+    <p>In a typical Argo CD setup you end up with one Application resource per environment, each pointing at a different branch or values file. Promoting a build means editing the right file, committing, and waiting for reconciliation — usually stitched together with ad-hoc CI scripts. There's no single view of what version is running where, no built-in concept of a verification gate ("only promote after staging has been healthy for 24 hours"), and rollback is just a manual Git revert.</p>
+
+    <h2>Where Kargo fits</h2>
+    <p>Kargo doesn't replace Argo CD — it sits alongside it and owns the decision of what gets promoted, where, and when, then writes the corresponding change to Git so Argo CD can do the actual reconciliation. It's fully declarative (promotion pipelines are Kubernetes custom resources), tooling-agnostic (Helm, Kustomize, or raw manifests), and treats every promotion as an auditable, first-class operation rather than a side effect of a CI job.</p>
+
+    <p>The full piece on Medium goes further into the enterprise rollout details — governance policies, approval workflows, and the promotion pipeline configuration end to end.</p>
+
+    <div class="tag-list">
+      <span>#GitOps</span><span>#ArgoCD</span><span>#Kargo</span><span>#Azure</span><span>#Kubernetes</span><span>#PlatformEngineering</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="from-commit-to-production-gitops-promotion-workflows-with-kargo-argo-cd.html">
+        <div class="post-card-media"><span class="tag">GitOps · Kargo · Argo CD</span></div>
+        <div class="post-card-body">
+          <h3>From Commit to Production: GitOps Promotion Workflows with Kargo &amp; Argo CD</h3>
+          <p>A step-by-step walkthrough of the same Kargo + Argo CD promotion model.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="mastering-gitops-argocd-deployment-patterns-for-scalable-kubernetes-delivery.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-argocd-deployment-patterns.svg" alt=""><span class="tag">GitOps · ArgoCD</span></div>
+        <div class="post-card-body">
+          <h3>Mastering GitOps: ArgoCD Deployment Patterns for Scalable Kubernetes Delivery</h3>
+          <p>Common GitOps-based deployment patterns using ArgoCD.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="managing-multi-cluster-deployments-with-argocd-mcp.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-argocd-mcp-multicluster.svg" alt=""><span class="tag">ArgoCD · Multi-Cluster</span></div>
+        <div class="post-card-body">
+          <h3>Managing Multi-Cluster Deployments with ArgoCD MCP</h3>
+          <p>Orchestrating GitOps delivery across distributed Kubernetes clusters.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

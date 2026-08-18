@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Connecting Confluent Cloud Kafka to Self-Hosted Kafka with Cluster Linking | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How to connect Confluent Cloud Kafka to a self-hosted Kafka cluster using Cluster Linking for hybrid, low-latency topic replication.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources · From Medium</span>
+    <h1>Seamlessly Connect Confluent Cloud Kafka to Self-Hosted Kafka with Cluster Linking</h1>
+    <p class="date">Published on Medium · Jun 26, 2025</p>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-kafka-cluster-linking.svg" alt="Confluent Cloud Kafka Cluster Linking banner">
+    </div>
+  </div>
+  <div class="container article-body">
+    <div class="medium-callout">
+      <p>Read the complete step-by-step configuration on Medium.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/seamlessly-connect-confluent-cloud-kafka-to-self-hosted-kafka-with-cluster-linking-for-effortless-b6fe672783a0" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
+
+    <p>Hybrid architectures that mix on-premise infrastructure with cloud-native services are increasingly the norm, and Kafka is no exception. This article covers connecting <strong>Confluent Cloud Kafka</strong> to a <strong>self-hosted Kafka cluster</strong> using Cluster Linking, so topics stay in sync across environments without bolting on a separate replication tool.</p>
+
+    <h2>What Cluster Linking does</h2>
+    <p>Cluster Linking is a Confluent Cloud feature that replicates topics and partitions directly between clusters — cloud-to-cloud, cloud-to-on-prem, or across regions — without the operational overhead of running something like MirrorMaker 2. It's built for exactly this kind of hybrid, multi-region setup.</p>
+
+    <h2>Why teams replicate across environments</h2>
+    <ul>
+      <li><strong>Disaster recovery:</strong> if one cluster goes down, the other keeps serving reads and writes.</li>
+      <li><strong>Global data distribution:</strong> replicate topics closer to where they're consumed for lower latency.</li>
+      <li><strong>Hybrid cloud architecture:</strong> keep on-prem and cloud Kafka in sync as a deliberate long-term architecture, not just a migration step.</li>
+      <li><strong>Data migration:</strong> move from on-prem to Confluent Cloud with zero downtime during the cutover.</li>
+    </ul>
+
+    <p>The full Medium post walks through the cluster setup on both sides, enabling the link, and verifying replication end to end — that detail is worth reading directly at the source link above.</p>
+
+    <div class="tag-list">
+      <span>#Kafka</span><span>#ConfluentCloud</span><span>#ClusterLinking</span><span>#HybridCloud</span><span>#DataEngineering</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="turning-nginx-open-source-into-a-lightweight-api-gateway-using-lua.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-nginx-lua-gateway.svg" alt=""><span class="tag">NGINX · Lua · API Gateway</span></div>
+        <div class="post-card-body">
+          <h3>Turning NGINX Open Source into a Lightweight API Gateway Using Lua</h3>
+          <p>How to turn NGINX into a scriptable API gateway with Lua.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="blueprint-for-success-designing-scalable-azure-subscriptions-the-right-way.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-azure-subscriptions.svg" alt=""><span class="tag">Azure · Cloud Governance</span></div>
+        <div class="post-card-body">
+          <h3>Blueprint for Success: Designing Scalable Azure Subscriptions the Right Way</h3>
+          <p>Establish cloud governance, security, and scalability from day one.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="the-mcp-orchestrator-the-conductor-your-ai-stack-has-been-missing.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-mcp-orchestrator.svg" alt=""><span class="tag">#MCP · AI Infrastructure</span></div>
+        <div class="post-card-body">
+          <h3>The MCP Orchestrator: The Conductor Your AI Stack Has Been Missing</h3>
+          <p>A single control plane for a production-grade agentic system.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

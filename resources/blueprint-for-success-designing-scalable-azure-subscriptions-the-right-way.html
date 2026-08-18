@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blueprint for Success: Designing Scalable Azure Subscriptions the Right Way | PlatformOpsStudio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Establish cloud governance, security, and scalability from day one with a well-architected Azure subscription design.">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="location-strip">📍 Texas, United States</div>
+  <div class="container">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/logo.png" alt="Platform Ops Studio logo">
+      <span>PlatformOpsStudio</span>
+    </a>
+    <nav>
+      <ul class="main-nav">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener">Virtual Workshops</a></li>
+        <li><a href="../resources.html" class="active">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary" href="https://platform-ops-studio.ueniweb.com/services/learning-programs/virtual-workshops-150605789" target="_blank" rel="noopener"><span class="btn-text">Learn With Me</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="section section-alt">
+  <div class="container article-header">
+    <span class="eyebrow">Resources · From Medium</span>
+    <h1>Blueprint for Success: Designing Scalable Azure Subscriptions the Right Way</h1>
+    <p class="date">Published on Medium · May 7, 2025</p>
+  </div>
+</section>
+
+<section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-azure-subscriptions.svg" alt="Azure Subscriptions Blueprint banner">
+    </div>
+  </div>
+  <div class="container article-body">
+    <div class="medium-callout">
+      <p>Full naming conventions and a Terraform snippet are on Medium.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/blueprint-for-success-designing-scalable-azure-subscriptions-the-right-way-84a3a514cc3e" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
+
+    <p>How you structure your Azure environment on day one determines how much governance pain you deal with later. This article covers the best practices, common patterns, and strategic considerations behind a well-architected Azure subscription design.</p>
+
+    <h2>Why subscription design matters</h2>
+    <p>A properly structured subscription architecture buys you separation of environments and workloads, consistent RBAC, transparent billing and cost allocation, cleaner resource lifecycle management, and simplified policy enforcement. Skip the planning and organizations tend to end up with sprawl, mismanaged resources, and avoidable operational risk.</p>
+
+    <h2>Key architectural principles</h2>
+    <ul>
+      <li><strong>Environment isolation:</strong> separate subscriptions for dev, test/QA, pre-production, and production, each with appropriate controls.</li>
+      <li><strong>Workload separation:</strong> dedicated subscriptions for line-of-business apps, shared services (identity, monitoring), and platform services like networking.</li>
+      <li><strong>Management group hierarchy:</strong> a tenant root group with platform, landing zone, and sandbox branches to structure governance top-down.</li>
+      <li><strong>Policy and compliance enforcement:</strong> Azure Policy at the management group or subscription level, consistent tagging, and Azure Blueprints for repeatable governance.</li>
+      <li><strong>Cost management:</strong> per-subscription budgets, cost allocation tags, and centralized visibility via Cost Management + Billing.</li>
+      <li><strong>Security and access control:</strong> least-privilege RBAC, Azure AD PIM for just-in-time access, and custom roles scoped to specific workloads.</li>
+    </ul>
+
+    <p>The full post also covers subscription naming conventions and automation tooling (Terraform/Bicep, Azure Landing Zones, Azure Lighthouse) — worth reading in full at the Medium link above.</p>
+
+    <div class="tag-list">
+      <span>#Azure</span><span>#CloudGovernance</span><span>#CloudArchitecture</span><span>#RBAC</span><span>#PlatformEngineering</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <h2 class="related-heading">More Articles to Explore</h2>
+    <div class="post-grid">
+      <a class="post-card" href="seamless-api-management-integrating-istio-ambient-mesh-with-azure-apim.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-istio-azure-apim.svg" alt=""><span class="tag">Istio Ambient · Azure APIM</span></div>
+        <div class="post-card-body">
+          <h3>Seamless API Management: Istio Ambient Mesh with Azure APIM</h3>
+          <p>The best of API management and service mesh, combined.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="managing-multi-cluster-deployments-with-argocd-mcp.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-argocd-mcp-multicluster.svg" alt=""><span class="tag">ArgoCD · Multi-Cluster</span></div>
+        <div class="post-card-body">
+          <h3>Managing Multi-Cluster Deployments with ArgoCD MCP</h3>
+          <p>Orchestrating GitOps delivery across distributed Kubernetes clusters.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+      <a class="post-card" href="seamlessly-connect-confluent-cloud-kafka-to-self-hosted-kafka-with-cluster-linking.html">
+        <div class="post-card-media"><img src="../assets/img/banners/banner-kafka-cluster-linking.svg" alt=""><span class="tag">Kafka · Confluent Cloud</span></div>
+        <div class="post-card-body">
+          <h3>Seamlessly Connect Confluent Cloud Kafka to Self-Hosted Kafka</h3>
+          <p>Hybrid, low-latency topic replication with Cluster Linking.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="../index.html">
+        <img src="../assets/img/logo.png" alt="Platform Ops Studio logo" style="height:32px">
+        <span style="color:#fff">PlatformOpsStudio</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="../resources.html">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../legal-notice.html">Legal Notice</a></li>
+        <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Platform Ops Studio. All rights reserved.</span>
+      <span>Texas, United States &middot; <a href="mailto:ramsudarsan@gmail.com" style="color:#fff">ramsudarsan@gmail.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie-banner">
+  <h4>We respect your privacy</h4>
+  <p>By continuing to use our website, you agree to our cookies policy.</p>
+  <button class="btn btn-primary cookie-accept">Accept</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

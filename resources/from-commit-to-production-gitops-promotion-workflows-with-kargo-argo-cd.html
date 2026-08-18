@@ -43,7 +43,16 @@
 </section>
 
 <section class="section section-alt" style="padding-top:0;">
+  <div class="container">
+    <div class="article-banner">
+      <img src="../assets/img/banners/banner-gitops-release-management.svg" alt="GitOps Release Management banner">
+    </div>
+  </div>
   <div class="container article-body">
+    <div class="medium-callout">
+      <p>A deeper, enterprise-focused walkthrough of this topic is published on Medium.</p>
+      <a class="btn btn-primary" href="https://medium.com/@ramsudarsan/gitops-release-management-building-enterprise-promotion-pipelines-with-kargo-and-argo-cd-c0864c3d2277" target="_blank" rel="noopener">Read on Medium →</a>
+    </div>
     <p>Promotion between environments is one of the most challenging aspects of continuous delivery when you're operating under GitOps principles. You've got Argo CD doing an excellent job of reconciling your cluster state with what's declared in Git — but how do you actually move a new version of your application from dev to staging to production in a way that's traceable, safe, and automated?</p>
     <p>That's exactly the problem Kargo was built to solve.</p>
     <p>In this article, we'll walk through what Kargo is, how it integrates with Argo CD, and how you can design a complete GitOps promotion workflow that takes your application from a freshly pushed container image all the way through to production — with guardrails at every step.</p>
@@ -93,7 +102,7 @@
     </ol>
     <p>This cycle repeats at each stage, with Kargo managing the flow and Argo CD handling the actual deployment. The Argo CD Application resources need a special annotation — <code>kargo.akuity.io/authorized-stage</code> — to ensure that only the designated Kargo stage can trigger updates to that application.</p>
     <p>Let's walk through building a three-stage promotion pipeline (dev → staging → prod) for a typical microservice.</p>
-    <p><em>Refer to my Medium post for the full walkthrough and manifests.</em></p>
+    <p><em>Refer to <a href="https://medium.com/@ramsudarsan/gitops-release-management-building-enterprise-promotion-pipelines-with-kargo-and-argo-cd-c0864c3d2277" target="_blank" rel="noopener" style="color:var(--accent); font-weight:700;">my Medium post</a> for the full walkthrough and manifests.</em></p>
 
     <div class="tag-list">
       <span>#GitOps</span><span>#Kargo</span><span>#ArgoCD</span><span>#Kubernetes</span><span>#ContinuousDelivery</span><span>#PlatformEngineering</span>
