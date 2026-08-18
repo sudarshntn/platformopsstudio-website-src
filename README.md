@@ -24,6 +24,8 @@ for local preview (via `npx serve`) — it's not required for deployment.
 │   ├── embracing-agile-platform-engineering-revolutionizes-project-management.html
 │   ├── how-devsecops-transforms-modern-software-development-practices.html
 │   └── ... (14 articles total, several cross-posted from Medium)
+├── newsletter.html             "The Platform Pulse" archive/landing page
+├── newsletter/                 One page per issue, e.g. edition-12-policy-as-code-...html
 ├── contact.html
 ├── legal-notice.html
 ├── privacy-policy.html
@@ -39,6 +41,22 @@ listing page is now `blogs.html` — it's an internal path, not a user-facing la
 
 Every page footer links out to the five PlatformOpsStudio social profiles (Facebook, Instagram,
 YouTube, X, LinkedIn) as inline SVG icons — no external icon font or JS dependency.
+
+### Newsletter section
+
+"The Platform Pulse" is written and published on LinkedIn first
+(linkedin.com/newsletters/the-platform-pulse-7468764234068369410) every Monday, then archived on
+this site. Each issue page under `newsletter/` is a distinct, original summary and commentary
+piece — not a duplicate of the LinkedIn post — with a callout linking back to the original at
+the top, and a `newsletter-band` CTA at the bottom pushing LinkedIn subscriptions. This is a
+deliberate SEO choice: because the content differs meaningfully from the LinkedIn version, no
+`rel="canonical"` override was added, so each issue can be indexed and rank on its own here.
+The `.signup-form` email capture (same mailto fallback pattern as the contact form, wired in
+`assets/js/main.js`) is there for future-proofing, not a live mailing list yet — the LinkedIn
+subscribe link is the only channel that actually delivers issues today. To add the next issue:
+copy an existing `newsletter/edition-NN-*.html` file, update its content and banner, add a card
+for it to `newsletter.html`'s archive grid, and update the "More Issues" cards on neighboring
+issue pages.
 
 ## Deploying to Hostinger (Git-based Web App deploy)
 

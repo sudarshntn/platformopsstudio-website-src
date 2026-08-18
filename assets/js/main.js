@@ -41,4 +41,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  var signupForms = document.querySelectorAll(".signup-form");
+  signupForms.forEach(function (signupForm) {
+    signupForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var status = signupForm.parentElement.querySelector(".form-status");
+      var email = signupForm.querySelector('input[type="email"]').value.trim();
+
+      var subject = encodeURIComponent("Subscribe me to The Platform Pulse (site signup)");
+      var body = encodeURIComponent("Please add this email to The Platform Pulse list: " + email);
+      window.location.href = "mailto:ramsudarsan@gmail.com?subject=" + subject + "&body=" + body;
+
+      if (status) {
+        status.textContent = "Opening your email client to confirm…";
+      }
+    });
+  });
 });

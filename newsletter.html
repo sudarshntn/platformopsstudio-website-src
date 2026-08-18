@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Privacy &amp; Cookies Policy | PlatformOpsStudio</title>
+<title>The Platform Pulse — Newsletter | PlatformOpsStudio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Platform Pulse: a weekly briefing on what's actually changing across Platform Engineering, DevSecOps, AI, and SRE. Read the full archive or subscribe on LinkedIn.">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +24,7 @@
       <ul class="main-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="blogs.html">Blogs</a></li>
-        <li><a href="newsletter.html">Newsletter</a></li>
+        <li><a href="newsletter.html" class="active">Newsletter</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
@@ -34,19 +35,91 @@
   </div>
 </header>
 
-<section class="section section-alt simple-page">
+<section class="hero hero-small">
+  <div class="container">
+    <span class="eyebrow" style="color:#9db8ff;">Newsletter</span>
+    <h1>The Platform Pulse</h1>
+    <p class="lead">A weekly briefing on what's actually changing across Platform Engineering, DevSecOps, AI, and SRE — and how it connects. New issue every Monday.</p>
+    <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:24px;">
+      <a class="btn btn-primary" href="https://www.linkedin.com/newsletters/the-platform-pulse-7468764234068369410/" target="_blank" rel="noopener">Subscribe on LinkedIn →</a>
+      <a class="btn btn-light" href="#archive">Browse the Archive</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
   <div class="container" style="max-width:780px;">
-    <h1>Privacy &amp; Cookies Policy</h1>
-    <p>This page describes, in plain terms, how Platform Ops Studio ("we", "I") handles information collected through platformopsstudio.com.</p>
+    <h2>Why this lives in two places</h2>
+    <p>Every issue of The Platform Pulse is written and published on LinkedIn first — that's where it's timely, where the comments happen, and where you should subscribe if you want it in your inbox the moment it goes out, every Monday.</p>
+    <p>This page is the permanent home for it afterward: a full archive of every issue, searchable and linkable, with a bit of added context I don't always fit into the LinkedIn version. If you found this through a search engine rather than LinkedIn, you're in the right place — just started from the other door.</p>
+    <form class="signup-form" style="margin-top:24px;">
+      <input type="email" placeholder="you@company.com" aria-label="Email address" required>
+      <button type="submit" class="btn btn-primary">Notify Me of New Issues</button>
+    </form>
+    <p class="signup-note">No mailing list is running yet on this end — for now this opens an email to me directly and I'll add you by hand. <a href="https://www.linkedin.com/newsletters/the-platform-pulse-7468764234068369410/" target="_blank" rel="noopener" style="color:var(--accent); font-weight:700;">Subscribing on LinkedIn</a> is still the fastest way to get every issue on day one.</p>
+  </div>
+</section>
 
-    <h2>Information we collect</h2>
-    <p>When you use the contact form, we collect the name, email address, phone number, and message you provide, solely to respond to your inquiry. We do not sell or share this information with third parties for marketing purposes.</p>
+<section class="section section-dark" id="archive">
+  <div class="container">
+    <span class="eyebrow">Archive</span>
+    <h2 style="color:#fff;">Every Issue, In Order</h2>
+    <div class="post-grid">
 
-    <h2>Cookies</h2>
-    <p>This site uses a minimal, essential cookie/local-storage entry to remember that you've dismissed the cookie notice. No third-party advertising or tracking cookies are set by this site.</p>
+      <a class="post-card" href="newsletter/edition-12-policy-as-code-opa-kyverno-cedar.html">
+        <div class="post-card-media"><img src="assets/img/banners/banner-newsletter-policy-as-code.svg" alt=""><span class="tag">Edition 12 · Aug 17, 2026</span></div>
+        <div class="post-card-body">
+          <h3>Policy as Code: OPA, Kyverno, Cedar — Which Wins in 2026?</h3>
+          <p>Why the single-tool answer platform teams got used to is quietly ending, and how to match the right policy engine to each control plane.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
 
-    <h2>Contacting us</h2>
-    <p>Questions about this policy can be sent to <a href="mailto:ramsudarsan@gmail.com" style="color:var(--accent); font-weight:700;">ramsudarsan@gmail.com</a>.</p>
+      <a class="post-card" href="newsletter/edition-11-golden-paths-developers-actually-use.html">
+        <div class="post-card-media"><img src="assets/img/banners/banner-newsletter-golden-paths.svg" alt=""><span class="tag">Edition 11 · Aug 10, 2026</span></div>
+        <div class="post-card-body">
+          <h3>Golden Paths That Developers Actually Use</h3>
+          <p>Most golden paths are documentation. The ones that win adoption are products — with defaults, ownership, and measurable usage.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+
+      <a class="post-card" href="newsletter/edition-10-gitops-at-scale-argo-cd-flux-500-clusters.html">
+        <div class="post-card-media"><img src="assets/img/banners/banner-newsletter-gitops-at-scale.svg" alt=""><span class="tag">Edition 10 · Aug 3, 2026</span></div>
+        <div class="post-card-body">
+          <h3>GitOps at Scale: Argo CD, Flux, and the Patterns That Survive 500 Clusters</h3>
+          <p>The repo-structure debate is settled, and the multi-cluster patterns that actually hold up past 50 clusters.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+
+      <a class="post-card" href="newsletter/edition-09-the-end-of-on-call-as-we-know-it.html">
+        <div class="post-card-media"><img src="assets/img/banners/banner-newsletter-end-of-on-call.svg" alt=""><span class="tag">Edition 09 · Jul 27, 2026</span></div>
+        <div class="post-card-body">
+          <h3>The End of On-Call As We Know It</h3>
+          <p>AI-assisted triage is shrinking rotations by up to 80% — the technology story is easy, the human redesign is the hard part.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+
+      <a class="post-card" href="newsletter/edition-08-llmops-production-grade-2026.html">
+        <div class="post-card-media"><img src="assets/img/banners/banner-newsletter-llmops.svg" alt=""><span class="tag">Edition 08 · Jul 20, 2026</span></div>
+        <div class="post-card-body">
+          <h3>LLMOps: What Production-Grade Looks Like in 2026</h3>
+          <p>The model is a component, not the product — the six-layer stack (and the eval layer everyone underestimates) that actually ships.</p>
+          <span class="read-more">Read More →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>Don't wait for the archive</h2>
+    <p>Every issue reaches LinkedIn subscribers first, every Monday. The version here follows once it's archived.</p>
+    <a class="btn btn-light" href="https://www.linkedin.com/newsletters/the-platform-pulse-7468764234068369410/" target="_blank" rel="noopener">Subscribe on LinkedIn</a>
   </div>
 </section>
 
