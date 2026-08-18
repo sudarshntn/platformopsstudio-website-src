@@ -16,13 +16,14 @@ for local preview (via `npx serve`) — it's not required for deployment.
 .
 ├── package.json                 No deps; build is a no-op (see note above)
 ├── index.html                  Home
-├── resources.html              Blog / resources listing
-├── resources/                  Individual articles
+├── blogs.html                  Blog listing (formerly resources.html)
+├── resources/                  Individual blog article pages
 │   ├── the-mcp-orchestrator-the-conductor-your-ai-stack-has-been-missing.html
 │   ├── empowering-teams-training-and-onboarding-in-the-gitops-framework.html
 │   ├── from-commit-to-production-gitops-promotion-workflows-with-kargo-argo-cd.html
 │   ├── embracing-agile-platform-engineering-revolutionizes-project-management.html
-│   └── how-devsecops-transforms-modern-software-development-practices.html
+│   ├── how-devsecops-transforms-modern-software-development-practices.html
+│   └── ... (14 articles total, several cross-posted from Medium)
 ├── contact.html
 ├── legal-notice.html
 ├── privacy-policy.html
@@ -30,8 +31,14 @@ for local preview (via `npx serve`) — it's not required for deployment.
 └── assets/
     ├── css/style.css
     ├── js/main.js
-    └── img/ (logo, hero, favicon)
+    └── img/ (logo, hero, favicon, banners/)
 ```
+
+The `resources/` folder name was kept as-is for the individual article pages even though the
+listing page is now `blogs.html` — it's an internal path, not a user-facing label.
+
+Every page footer links out to the five PlatformOpsStudio social profiles (Facebook, Instagram,
+YouTube, X, LinkedIn) as inline SVG icons — no external icon font or JS dependency.
 
 ## Deploying to Hostinger (Git-based Web App deploy)
 
@@ -51,7 +58,7 @@ step**, so this static structure deploys directly with nothing else to configure
 
 ## Contact form
 
-The contact form on `contact.html` / `resources.html` currently opens the visitor's email
+The contact form on `contact.html` / `blogs.html` currently opens the visitor's email
 client via a `mailto:` link (see `assets/js/main.js`) — no backend required. To collect
 submissions server-side instead, swap the JS handler for a form service such as Hostinger's
 own form endpoint, [Formspree](https://formspree.io), or a serverless function, and point the
