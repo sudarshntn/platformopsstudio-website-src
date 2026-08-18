@@ -45,16 +45,31 @@ YouTube, X, LinkedIn) as inline SVG icons — no external icon font or JS depend
 Hostinger's Git integration pulls the repo as-is into `public_html` — there is **no build
 step**, so this static structure deploys directly with nothing else to configure.
 
+### One-time setup
+
 1. Log in to **hPanel** → **Websites** → select the site (or **Add Website → Deploy Web App**
    if platformopsstudio.com isn't added yet).
 2. Open the site's **Dashboard → Advanced → Git**.
-3. Click **Continue with GitHub**, authorize the Hostinger GitHub App, and select
-   `sudarshntn/platformopsstudio-website-src`.
-4. Branch: `main`. Root directory: `/` (this repo's root maps straight to `public_html`).
-5. Click **Deploy**. Every push to `main` will redeploy automatically once auto-deploy is
-   enabled on the Git panel.
+3. Click **Connect with GitHub**, authorize the Hostinger GitHub App, and grant it access to
+   `sudarshntn/platformopsstudio-website-src` (use **Refresh repositories** if it doesn't show
+   up right away).
+4. Set **Branch** to `main` and leave **Deploy directory** at the default (root / `public_html`).
+5. Click **Deploy** to run the first deployment.
 6. Point the `platformopsstudio.com` domain's DNS/nameservers at Hostinger (or add it as the
    site's domain in hPanel) and issue the free SSL certificate under **Websites → SSL**.
+
+### Continuous deployment (already automatic — nothing to toggle)
+
+There's no separate "auto-deploy" switch to find. Once step 3–5 above is done, Hostinger
+registers a GitHub webhook on the repo, and **every push to `main` redeploys automatically**:
+push → GitHub fires the webhook → Hostinger pulls the latest commit → site is live, usually
+within seconds since there's no build step. The Git panel shows an **"Auto-deployment"** chip
+while that webhook connection is healthy, and each deploy (auto or manual) is listed in the
+panel's history. Use the **Redeploy** button on the Overview tab only if you need to force a
+pull outside of a push (e.g. after changing the branch or deploy directory).
+
+If deploys stop showing up after a push, check that chip first — a revoked GitHub App
+authorization or a renamed/force-pushed branch is the usual cause.
 
 ## Contact form
 
