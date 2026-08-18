@@ -5,10 +5,16 @@ previous UENI-hosted site content for deployment on **Hostinger's Web App / Webs
 
 Plain HTML, CSS, and vanilla JS — no build step, no framework, no dependencies.
 
+`package.json` is included only so hosts that auto-detect Node projects (e.g. an "import"
+step that expects one) have something to read; it declares zero dependencies and its `build`
+script is a no-op, since there is nothing to compile. `npm start` just serves the folder as-is
+for local preview (via `npx serve`) — it's not required for deployment.
+
 ## Structure
 
 ```
 .
+├── package.json                 No deps; build is a no-op (see note above)
 ├── index.html                  Home
 ├── resources.html              Blog / resources listing
 ├── resources/                  Individual articles

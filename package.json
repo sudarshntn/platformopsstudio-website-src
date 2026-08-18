@@ -1,0 +1,16 @@
+{
+  "name": "platformopsstudio-website-src",
+  "version": "1.0.0",
+  "description": "Static website source for platformopsstudio.com — plain HTML/CSS/JS, no build step required.",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "npx --yes serve . -l 8080",
+    "build": "echo \"No build step required — this is a static HTML/CSS/JS site.\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sudarshntn/platformopsstudio-website-src.git"
+  },
+  "homepage": "https://platformopsstudio.com"
+}
