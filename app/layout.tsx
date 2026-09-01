@@ -7,10 +7,10 @@ import "./globals.css";
  * to fonts.googleapis.com). Each family exposes a CSS variable that
  * globals.css picks up via @theme.
  *
- * Weight audit (stage 2): only the weights actually used in components
- * are loaded, per the utility-class audit. Adding a weight requires
- * loading it here too. Inter is loaded as a variable font (all weights
- * in one file), so no `weight` prop.
+ * Weight audit (stage 2, per file): only the weights actually used in
+ * components are loaded, per the utility-class audit. Adding a weight
+ * requires loading it here too. Inter is loaded as a variable font (all
+ * weights in one file), so no `weight` prop.
  *
  * `display: swap` prevents FOIT — the fallback (system-ui) shows
  * until the web font arrives, then swaps in with no layout shift
@@ -20,7 +20,6 @@ const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
   display: "swap",
-  // Only 700 is used — Heading H1/H2 apply `font-bold`.
   weight: ["700"],
 });
 
@@ -28,16 +27,16 @@ const sans = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-  // Variable font — one file covers 400/500/600/700.
 });
 
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
-  // Only 400 is used — code blocks, technical labels. No mono headings.
   weight: ["400"],
 });
+
+import type { Viewport } from "next";
 
 export const metadata: Metadata = {
   title: {
@@ -49,12 +48,22 @@ export const metadata: Metadata = {
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL
     ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
     : undefined,
-  // Icons — Next 15 auto-detects `app/icon.png` and `app/apple-icon.png`
-  // from the file-based convention, so no explicit `icons.icon` needed.
-  // We still declare the manifest link (referenced 192/512 PNGs live in
-  // /public/, added in stage 4 when the PWA manifest lands).
 };
 
+// `themeColor` and viewport-scaling live in the separate viewport export
+// per Next 15 conventions (moved out of `metadata` since Next 14).
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0b10" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  ],
+};
+
+/*
+ * Root layout wraps every route including the QA `/design` surface and
+ * any future non-marketing routes. Header/footer/skip-link only apply
+ * under the `(site)` route group — see app/(site)/layout.tsx.
+ */
 export default function RootLayout({ children }: { readonly children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
