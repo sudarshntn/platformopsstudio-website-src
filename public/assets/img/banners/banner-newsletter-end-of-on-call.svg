@@ -1,0 +1,37 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" font-family="'Inconsolata', 'SFMono-Regular', Menlo, Consolas, monospace">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1a3a"/>
+      <stop offset="55%" stop-color="#06070b"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="80%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#3a7dff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#3a7dff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#3a7dff" stroke-opacity="0.25" stroke-width="2"/>
+
+  <rect x="64" y="42" width="352" height="40" rx="20" fill="#3a7dff" fill-opacity="0.15" stroke="#3a7dff" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text x="82" y="68" font-size="16" font-weight="700" letter-spacing="1.5" fill="#3a7dff">THE PLATFORM PULSE · EDITION 09</text>
+  <text x="64" y="220" font-size="48" font-weight="700" fill="#ffffff"><tspan x="64" dy="0">The End of On-Call</tspan><tspan x="64" dy="66">As We Know It</tspan></text>
+
+  <g transform="translate(960,340)" stroke="#3a7dff" fill="none" stroke-width="3" opacity="0.9">
+    <circle r="170" stroke-opacity="0.25" stroke-width="1.5"/>
+    
+    <path d="M-60 40 C-60 -60 -40 -110 0 -110 C40 -110 60 -60 60 40 L80 70 H-80 Z"/>
+    <path d="M-20 70 C-20 90 20 90 20 70" stroke-width="5"/>
+    <circle cx="55" cy="-90" r="26" fill="#0d1a3a" stroke-width="3"/>
+    <path d="M42 -90 L52 -80 L70 -102" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  </g>
+
+  <text x="64" y="580" font-size="20" font-weight="700" fill="#ffffff">The Platform Pulse</text>
+  <text x="64" y="606" font-size="15" fill="#8a90a3">PlatformOpsStudio Newsletter</text>
+</svg>

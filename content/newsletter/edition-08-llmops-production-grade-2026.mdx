@@ -1,0 +1,37 @@
+---
+title: "LLMOps: What Production-Grade Looks Like in 2026"
+edition: 8
+date: 2026-07-20
+excerpt: "The notebook worked. The demo wowed the board. Then production revealed LLMOps is just MLOps wearing a hoodie. The six-layer stack — and the eval layer everyone underestimates — that actually ships."
+tags: [LLMOps, MLOps, AIInfrastructure, RAG, PlatformEngineering]
+slug: edition-08-llmops-production-grade-2026
+linkedInUrl: https://www.linkedin.com/pulse/llmops-what-production-grade-looks-like-2026-sudarshan-narayanan-npeuc
+cover: /assets/img/banners/banner-newsletter-llmops.svg
+---
+
+The notebook worked. The demo wowed the board. Then the project hit production and the team discovered LLMOps is just MLOps wearing a hoodie. Stanford's AI Index shows enterprise GenAI projects now hit a 47% deployment rate, up from 14% two years ago — the teams that made that jump built LLMOps muscle early.
+
+## The stack has stabilized around six layers
+
+- **Model serving** — inference endpoints, batching, streaming, cold-start management. Whether it's a hosted API or a self-hosted open-weight model, this is the throughput bottleneck.
+- **Prompt management** — prompts versioned and source-controlled like code, not scattered across untracked config.
+- **RAG** — vector store, retrieval logic, context assembly. This is where roughly 60% of output-quality problems actually originate.
+- **Guardrails** — input/output filtering, PII redaction, prompt-injection defense.
+- **Evaluation** — regression tests, quality benchmarks, red-teaming, cost and latency measurement.
+- **Observability** — traces, token counting, cost attribution, quality-drift detection.
+
+The model itself isn't on that list — deliberately. It's a component, not the product. The stack is the product, and most teams starting LLMOps in 2026 skip half these layers, then wonder why production feels chaotic. It isn't chaos; it's the predictable outcome of missing infrastructure.
+
+## The layer everyone underestimates: eval
+
+An ML pipeline without unit tests wouldn't ship. LLM applications get treated differently, and they shouldn't. Real eval in 2026 means regression tests that block merges on every prompt or model change, domain-specific quality benchmarks, LLM-as-judge grading (cheap enough now to run at scale thanks to prompt caching), and human review loops sampled for high-stakes outputs with disagreement patterns tracked over time. Teams that skip this end up using customer complaints as their eval suite — which is not a strategy.
+
+## Prompts are code now
+
+"Prompt-as-code" sounds like a slogan until an unversioned prompt change causes a production incident. In practice it means: prompts live in the source tree, not application config; every prompt is versioned; changes go through code review; and prompt performance is tracked over time, not just checked at deploy. Teams doing this ship changes and roll them back with the same confidence they have in application code — everyone else is debugging by memory.
+
+### Why this matters for platform teams
+
+If your org's GenAI stack is mostly a model API call with a hand-tuned prompt, the eval layer is the single highest-leverage gap to close first — it's what turns "the demo worked" into a system you can safely change without customer complaints as your regression suite.
+
+The full issue on LinkedIn covers the tooling landscape (LangSmith, Langfuse, Braintrust, Humanloop) in more depth.

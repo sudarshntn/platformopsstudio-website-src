@@ -1,0 +1,24 @@
+---
+title: "Seamlessly Connect Confluent Cloud Kafka to Self-Hosted Kafka with Cluster Linking"
+date: 2025-06-26
+excerpt: "How Cluster Linking replicates topics between Confluent Cloud and a self-hosted Kafka cluster for hybrid, low-latency data flows — no MirrorMaker 2 required."
+tags: [Kafka, ConfluentCloud, ClusterLinking, HybridCloud, DataEngineering]
+slug: seamlessly-connect-confluent-cloud-kafka-to-self-hosted-kafka
+cover: /assets/img/banners/banner-kafka-cluster-linking.svg
+mediumUrl: https://medium.com/@ramsudarsan/seamlessly-connect-confluent-cloud-kafka-to-self-hosted-kafka-with-cluster-linking-for-effortless-b6fe672783a0
+---
+
+Hybrid architectures that mix on-premise infrastructure with cloud-native services are increasingly the norm, and Kafka is no exception. This article covers connecting **Confluent Cloud Kafka** to a **self-hosted Kafka cluster** using Cluster Linking, so topics stay in sync across environments without bolting on a separate replication tool.
+
+## What Cluster Linking does
+
+Cluster Linking is a Confluent Cloud feature that replicates topics and partitions directly between clusters — cloud-to-cloud, cloud-to-on-prem, or across regions — without running MirrorMaker 2. It's built for hybrid, multi-region setups.
+
+## Why teams replicate across environments
+
+- **Disaster recovery** — if one cluster goes down, the other keeps serving.
+- **Global data distribution** — replicate topics closer to where they're consumed.
+- **Hybrid cloud architecture** — keep on-prem and cloud Kafka in sync as a long-term architecture.
+- **Data migration** — move from on-prem to Confluent Cloud with zero downtime.
+
+The full Medium post walks through the cluster setup on both sides, enabling the link, and verifying replication end to end.

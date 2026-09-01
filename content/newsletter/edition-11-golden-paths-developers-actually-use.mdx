@@ -1,0 +1,35 @@
+---
+title: "Golden Paths That Developers Actually Use"
+edition: 11
+date: 2026-08-10
+excerpt: "Spotify's golden-path concept turned ten this year. Most implementations get one thing wrong: they treat it as documentation. Documentation loses to copy-paste. Products win against copy-paste."
+tags: [PlatformEngineering, GoldenPaths, DeveloperExperience, Backstage, IDP]
+slug: edition-11-golden-paths-developers-actually-use
+linkedInUrl: https://www.linkedin.com/pulse/golden-paths-developers-actually-use-sudarshan-narayanan-vmdyc
+cover: /assets/img/banners/banner-newsletter-golden-paths.svg
+---
+
+Spotify's original golden-path concept turned ten years old this year, and in that decade most platform teams built their own version — and got one thing wrong. They treated it as documentation. A wiki page doesn't beat copy-pasting from Slack. A product does.
+
+## The four-question test
+
+A real golden path passes tests a documented suggestion never does:
+
+- **Is it the default?** If a developer has to opt in, it's a scenic detour most people skip.
+- **Is it faster than the alternative?** If it's slower than "I'll just spin up something quick," it's competing against the strongest incentive a developer has: shipping this week.
+- **Does it evolve?** A path that doesn't get updated as infrastructure changes becomes an anti-pattern within 18 months — it needs an owner and a deprecation strategy, not just a launch.
+- **Can you measure adoption?** If you can't say what percentage of new services use it, you don't have a product. You have a hope.
+
+Most "golden paths" fail at least two of these.
+
+## Code, not documentation
+
+The pattern that's matured by 2026: golden paths live as code. Scaffolding tools (Backstage software templates, Cookiecutter, custom generators) bake paved-road defaults into every new service at creation time. Scorecards (Cortex, Backstage Scorecards, Compass) continuously check conformance — SLOs configured, observability wired up, ownership documented. Policy engines enforce the parts that matter automatically. Documentation supports the code by explaining *why*; it doesn't try to *be* the path.
+
+The design principle underneath all of it: the right way has to be the easy way. If the golden path is merely recommended, expect roughly 70% deviation. If it's the default a scaffolder generates automatically, expect adoption closer to 90%.
+
+### Why this matters for platform teams
+
+If your team's golden path currently lives primarily in Confluence, the fastest lever isn't better docs — it's picking one metric (percentage of new services scaffolded from the template) and instrumenting it this quarter. That single number will tell you faster than any survey whether you've built a product or a suggestion box.
+
+The full issue on LinkedIn covers the adoption metrics worth tracking in more depth, plus what to do when the numbers come back low.

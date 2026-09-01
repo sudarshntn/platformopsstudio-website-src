@@ -1,0 +1,24 @@
+---
+title: "Bridging the Mesh: Integrating Istio Ambient with Kong Konnect and Kong Gateway"
+date: 2025-04-12
+excerpt: "Combining Istio Ambient Mesh on AKS with Kong Gateway and Konnect for zero-trust internal traffic and centralized API management at the edge."
+tags: [IstioAmbient, KongKonnect, KongGateway, ServiceMesh, APIGateway, ZeroTrust, AKS, CloudNative]
+slug: bridging-the-mesh-istio-ambient-with-kong-konnect
+cover: /assets/img/banners/banner-istio-kong.svg
+mediumUrl: https://medium.com/@ramsudarsan/bridging-the-mesh-integrating-istio-ambient-with-kong-konnect-and-kong-gateway-eac751f205e4
+---
+
+As microservices spread across more clusters and clouds, newer service mesh architectures aim to cut operational overhead without giving up security or observability. **Istio Ambient Mesh** offers a sidecar-less model that does exactly that, while **Kong Gateway** and **Kong Konnect** handle API and traffic management across hybrid and multi-cloud environments. This article covers combining the two on AKS (Azure Kubernetes Service).
+
+## What the integration buys you
+
+- Seamless ingress of API traffic through Kong
+- Zero-trust security at the service level via Istio Ambient
+- L7 traffic management and observability
+- Centralized API governance through Kong Konnect
+
+The architecture puts Kong Gateway at the edge, securely forwarding traffic into Istio-managed services via Ambient Mesh, while Konnect layers on API management — a cloud-agnostic combination.
+
+## What the guide walks through
+
+Starting from an AKS cluster with Istio Ambient installed, the full post covers labeling namespaces for Ambient mode, deploying Kong Gateway with Gateway API support via Helm, and wiring Kong's ingress to route traffic correctly into the mesh.

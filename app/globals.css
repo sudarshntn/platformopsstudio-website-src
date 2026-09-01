@@ -1,35 +1,290 @@
 @import "tailwindcss";
 
-/**
- * Tailwind v4 uses CSS-first configuration — no tailwind.config.js.
- * Design tokens go in @theme; they become CSS variables (--color-accent,
- * --font-heading, etc.) that both Tailwind utilities and hand-written CSS
- * can consume.
+/*
+ * PlatformOpsStudio — design tokens (stage 1)
+ * -------------------------------------------
+ * Every design decision lives here as a CSS custom property. Tailwind v4
+ * reads @theme values to generate utilities (`bg-primary`, `text-muted`,
+ * `p-4`, `rounded-md`, `shadow-lg`, `duration-fast`, …); nothing outside
+ * this file should hardcode a hex, a font family, or a raw spacing value.
  *
- * The values below mirror the legacy static site so stage-N components can
- * be dropped in without a design system rewrite. Refine once the design
- * pass lands.
+ * Dark theme is the DEFAULT. Light theme is a `prefers-color-scheme`
+ * override on :root — only color tokens change; typography, spacing,
+ * radii, shadows, and motion tokens are theme-invariant.
+ *
+ * Contrast ratios and palette rationale are documented in
+ * docs/design-system.md.
  */
+
 @theme {
-  --color-accent: #065be3;
-  --color-accent-light: #3a7dff;
+  /* ── COLOR ───────────────────────────────────────────────── */
+  --color-bg: #0a0b10;
+  --color-surface: #141721;
+  --color-surface-2: #1e222f;
+  --color-border: #2a2f3e;
+  --color-text: #e8eaf0;
+  --color-text-muted: #9aa3b2;
+  --color-primary: #4f7cff;
+  --color-primary-fg: #0a0b10;
+  --color-accent: #a78bfa;
+  --color-danger: #f87171;
+  --color-success: #4ade80;
+  --color-focus: #4f7cff;
 
-  --color-bg-dark: #06070b;
-  --color-bg-dark-2: #0d0f16;
-  --color-bg-light: #f4f5f8;
+  /* Short aliases so utilities read naturally: `text-muted` instead of
+     `text-text-muted`, `text-fg` instead of `text-text`. The canonical
+     tokens above stay the source of truth (per spec); these are just
+     utility-naming ergonomics. */
+  --color-muted: var(--color-text-muted);
+  --color-fg: var(--color-text);
 
-  --color-text-light: #f5f6fa;
-  --color-text-muted: #b7bcc9;
-  --color-text-dark: #14151a;
-  --color-text-dark-muted: #545862;
+  /* ── TYPOGRAPHY ──────────────────────────────────────────── */
+  /* next/font sets --font-display, --font-sans, --font-mono on <html>.
+     The @theme entries below re-expose them as Tailwind font utilities
+     (font-display / font-sans / font-mono) and give each a graceful
+     system fallback stack. */
+  --font-display:
+    var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-sans:
+    var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
 
-  --color-border-dark: #1c1f29;
-  --color-border-light: #e2e4ea;
+  /* Fluid type scale — clamp(min, preferred, max). Preferred blends a rem
+     baseline with a viewport-width term so the ramp is smooth across the
+     375-1440px viewport range. */
+  --text-h1: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  --text-h2: clamp(1.875rem, 1.375rem + 2vw, 3rem);
+  --text-h3: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+  --text-h4: clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem);
+  --text-h5: clamp(1.125rem, 1.0625rem + 0.25vw, 1.25rem);
+  --text-h6: 1rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
 
-  --font-heading: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-sans: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Line heights paired to sizes above. Display type gets tighter leading. */
+  --leading-display: 1.1;
+  --leading-heading: 1.25;
+  --leading-body: 1.6;
+
+  /* ── SPACING ────────────────────────────────────────────── */
+  /* --spacing is the Tailwind v4 base multiplier for p-1, m-2, gap-4, etc.
+     Named --space-* tokens are exposed for hand-written CSS that wants
+     semantic reference (rather than a raw multiplier). */
+  --spacing: 0.25rem;
+
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ── RADII ──────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ── SHADOWS (color-mixed alpha) ────────────────────────── */
+  --shadow-sm: 0 1px 2px color-mix(in oklab, black 40%, transparent);
+  --shadow-md: 0 6px 20px color-mix(in oklab, black 50%, transparent);
+  --shadow-lg: 0 20px 60px color-mix(in oklab, black 60%, transparent);
+
+  /* ── MOTION ─────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 480ms;
+
+  /* Container width cap — matched to legacy site's --max-width for parity. */
+  --container-max: 1120px;
 }
 
+/* ── LIGHT THEME OVERRIDES ────────────────────────────────── */
+/* Same token names, different values. Only color tokens change here —
+   typography/spacing/motion are theme-invariant. Media query means no JS
+   is required; the design-system-toggle button ships in stage 12. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #f7f8fa;
+    --color-surface-2: #eef0f5;
+    --color-border: #dcdfe6;
+    --color-text: #0a0b10;
+    --color-text-muted: #545862;
+    --color-primary: #3d5cee;
+    --color-primary-fg: #ffffff;
+    --color-accent: #7c3aed;
+    --color-danger: #dc2626;
+    --color-success: #16a34a;
+    --color-focus: #3d5cee;
+
+    /* Shadows are subtler on light bg */
+    --shadow-sm: 0 1px 2px color-mix(in oklab, black 6%, transparent);
+    --shadow-md: 0 6px 20px color-mix(in oklab, black 10%, transparent);
+    --shadow-lg: 0 20px 60px color-mix(in oklab, black 15%, transparent);
+  }
+}
+
+/* ── BASE STYLES ──────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  /* Prevent zoom on iOS form focus without breaking desktop text-select. */
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark light;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* All interactive states get a visible focus-visible ring in --color-focus.
+   Applied globally so any element that becomes focusable inherits the
+   affordance — no per-primitive duplication. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect the reduced-motion user preference across the whole site.
+   Individual components can still opt in to essential motion (e.g. focus
+   transitions) — they should use `@media (prefers-reduced-motion: no-preference)`
+   guards for anything non-essential. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Selection color — matches primary but with alpha, so long selections
+   stay readable. */
+::selection {
+  background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+  color: var(--color-text);
+}
+
+/* ── PROSE (MDX body rendering) ─────────────────────────────
+   Wrap any long-form MDX body in a container with .prose. All type
+   uses the design tokens — no @tailwindcss/typography default palette.
+   The MDX components map (lib/content/mdx-components.tsx) handles
+   headings and links through primitives; the .prose selectors here
+   pick up the leftover elements (paragraphs, lists, blockquotes,
+   images, code blocks emitted by rehype-pretty-code, etc.). */
+.prose {
+  color: var(--color-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  max-width: 68ch;
+}
+
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+.prose > h2 {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-4);
+}
+.prose > h3 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+}
+.prose > h4 {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  color: var(--color-text);
+}
+.prose ul {
+  list-style-type: disc;
+}
+.prose ol {
+  list-style-type: decimal;
+}
+.prose li + li {
+  margin-top: 0.5em;
+}
+
+.prose blockquote {
+  padding: 0.4em 1.4em;
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose strong {
+  color: var(--color-text);
+  font-weight: 700;
+}
+.prose em {
+  font-style: italic;
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-8) 0;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+/* Block code — rehype-pretty-code emits <pre><code data-language="…">
+   with per-token <span style="color:…"> inline colors. We set the
+   surface + padding here and let the inline styles handle syntax. */
+.prose pre {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  display: grid; /* rehype-pretty-code line grid */
+}
+.prose :not(pre) > code {
+  background: var(--color-surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--color-text);
 }

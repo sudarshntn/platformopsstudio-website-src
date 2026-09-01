@@ -1,0 +1,21 @@
+---
+title: "GitOps Release Management: Enterprise Promotion Pipelines with Kargo and Argo CD"
+date: 2026-03-05
+excerpt: "How platform teams automate safe Dev → Stage → Production promotions in Kubernetes with Kargo as the missing promotion-orchestration layer on top of Argo CD."
+tags: [GitOps, ArgoCD, Kargo, Kubernetes, PlatformEngineering]
+slug: gitops-release-management-with-kargo-and-argo-cd
+cover: /assets/img/banners/banner-gitops-release-management.svg
+mediumUrl: https://medium.com/@ramsudarsan/gitops-release-management-building-enterprise-promotion-pipelines-with-kargo-and-argo-cd-c0864c3d2277
+---
+
+GitOps made Git the single source of truth for Kubernetes delivery, and Argo CD does an excellent job of continuously reconciling cluster state against what's declared in a repo. What it doesn't solve on its own is *release promotion* — the structured, governed movement of an artifact from dev to staging to production with traceability and approval gates along the way. That's the gap this article walks through, using **Kargo** — Akuity's open-source continuous promotion platform — as the missing layer on top of Argo CD.
+
+## Why traditional GitOps promotion breaks down
+
+In a typical Argo CD setup you end up with one Application resource per environment, each pointing at a different branch or values file. Promoting a build means editing the right file, committing, and waiting for reconciliation — usually stitched together with ad-hoc CI scripts. There's no single view of what version is running where, no built-in concept of a verification gate ("only promote after staging has been healthy for 24 hours"), and rollback is just a manual Git revert.
+
+## Where Kargo fits
+
+Kargo doesn't replace Argo CD — it sits alongside it and owns the decision of *what* gets promoted, *where*, and *when*, then writes the corresponding change to Git so Argo CD can do the actual reconciliation. It's fully declarative (promotion pipelines are Kubernetes custom resources), tooling-agnostic (Helm, Kustomize, or raw manifests), and treats every promotion as an auditable, first-class operation rather than a side effect of a CI job.
+
+The full piece on Medium goes further into the enterprise rollout details — governance policies, approval workflows, and the promotion pipeline configuration end to end.

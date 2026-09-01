@@ -1,0 +1,28 @@
+---
+title: "From Commit to Production: GitOps Promotion Workflows with Kargo & Argo CD"
+date: 2026-04-01
+excerpt: "A step-by-step walkthrough of the Kargo + Argo CD promotion model — Warehouses, Freight, Stages, and the flow that gets a build safely from dev to prod."
+tags: [GitOps, Kargo, ArgoCD, Kubernetes, ContinuousDelivery, PlatformEngineering]
+slug: from-commit-to-production-gitops-promotion-workflows-with-kargo-argo-cd
+cover: /assets/img/banners/banner-gitops-release-management.svg
+---
+
+Promotion between environments is one of the hardest parts of continuous delivery under GitOps. Argo CD is excellent at reconciling cluster state with Git — but how do you actually move a new version of your application from dev to staging to production in a way that's traceable, safe, and automated? That's what Kargo was built to solve.
+
+## The promotion gap
+
+In a typical Argo CD setup, three Application resources point at different directories or value files. Promoting means manually (or via CI) updating an image tag, committing, and waiting for Argo CD to pick up the change. It works, but there's no unified view of what's running where, no built-in verification gates, and rollback is a manual Git revert.
+
+## Core Kargo concepts
+
+- **Projects** — top-level namespace-scoped units of organization and RBAC.
+- **Warehouses** — where promotable artifacts originate. They subscribe to registries, Git repos, or Helm charts and package new versions into Freight.
+- **Freight** — a "meta-artifact" bundling versions of one or more artifacts that travel together through the pipeline. Immutable Kubernetes resources with SHA-1 names and friendly aliases like `fruitful-ferret`.
+- **Stages** — the most important concept. Each represents an instance of your application (dev, staging, prod), declares what Freight it accepts, and defines promotion-template steps.
+- **Promotions** — a request to move a specific piece of Freight into a specific Stage. Manual or auto-policy-driven.
+
+## How Kargo and Argo CD work together
+
+CI builds → Warehouse detects → Freight created → Stage picks it up → promotion template updates Git → Argo CD syncs → optional verification runs → Freight marked verified in that stage → eligible for the next.
+
+Refer to the Medium post for the full walkthrough and manifests.
