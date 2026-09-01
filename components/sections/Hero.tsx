@@ -1,25 +1,35 @@
 import NextLink from "next/link";
 import { Container, Heading, Text } from "@/components/ui";
+import { HeroScene } from "@/components/three/HeroScene";
 import { heroCopy } from "@/content/copy/home";
 
 /**
- * Home hero. Two-column-ish on wide viewports (copy hugs left, the
- * gradient area breathes on the right), stacked on narrow ones.
+ * Home hero. Full-bleed 3D scene behind the copy, always readable
+ * because a top-to-bottom gradient overlay fades the scene edges into
+ * the page background.
  *
- * The full-bleed `bg-hero-gradient` div is the placeholder that
- * Stage 5's <HeroScene/> Canvas will replace. It renders behind the
- * hero copy at the same size so the LCP element (the H1) stays
- * exactly where it is when the 3D scene mounts — the swap is
- * transparent to the page layout, no CLS.
+ * The Canvas inside <HeroScene/> is lazily mounted (idle + in-view +
+ * WebGL available + not reduced-motion) and pauses its render loop
+ * when the tab is hidden. See components/three/HeroScene.tsx for the
+ * gating logic. It renders inside the same absolute-positioned box as
+ * the static gradient below, so the LCP element (the H1) never moves
+ * on Canvas swap-in — zero CLS.
  */
 export function Hero() {
   return (
     <section className="bg-bg relative isolate overflow-hidden">
-      {/* Placeholder for the Stage 5 Canvas */}
+      {/* Static token-colored radial glow behind everything —
+          renders in the initial paint, no JS required. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_75%_35%,color-mix(in_oklab,var(--color-primary)_22%,transparent)_0%,transparent_50%),radial-gradient(circle_at_20%_80%,color-mix(in_oklab,var(--color-accent)_16%,transparent)_0%,transparent_45%)]"
+        className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_75%_35%,color-mix(in_oklab,var(--color-primary)_22%,transparent)_0%,transparent_50%),radial-gradient(circle_at_20%_80%,color-mix(in_oklab,var(--color-accent)_16%,transparent)_0%,transparent_45%)]"
       />
+
+      {/* 3D scene layer (client-only, lazy). */}
+      <HeroScene />
+
+      {/* Bottom-fade overlay so the scene blends into the About
+          section that follows without a hard edge. */}
       <div
         aria-hidden
         className="to-bg pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent"
