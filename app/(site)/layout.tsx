@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { LenisProvider } from "@/components/scroll/LenisProvider";
+import { RouteAnnouncer } from "@/components/a11y/RouteAnnouncer";
 
 /**
  * Chrome shared by every marketing/content page: skip-link, sticky
@@ -18,6 +19,7 @@ export default function SiteLayout({ children }: { readonly children: React.Reac
         {children}
       </main>
       <Footer />
+      <RouteAnnouncer />
     </LenisProvider>
   );
 }

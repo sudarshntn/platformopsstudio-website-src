@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import NextLink from "next/link";
@@ -33,10 +33,20 @@ type Status =
  * hidden and marked aria-hidden; `t0` is set on mount and included
  * in every submit — the server rejects if the age is under 1.5s.
  */
+const FIELD_LABELS: Record<string, string> = {
+  name: "Name",
+  email: "Email",
+  phone: "Phone",
+  message: "Message",
+  consent: "Privacy consent",
+};
+
 export function ContactForm() {
   const t0Ref = useRef<number>(0);
   const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   useEffect(() => {
     t0Ref.current = Date.now();
@@ -63,6 +73,27 @@ export function ContactForm() {
       t0: 0,
     },
   });
+
+  // Fields with an active error, in DOM order. Used to render an error
+  // summary above the form after a failed submit — clicking a summary
+  // link jumps focus straight to the offending input.
+  const errorList = useMemo(() => {
+    const order: Array<keyof typeof FIELD_LABELS> = [
+      "name",
+      "email",
+      "phone",
+      "message",
+      "consent",
+    ];
+    return order
+      .filter((k) => errors[k])
+      .map((k) => ({
+        field: k,
+        label: FIELD_LABELS[k] ?? k,
+        message: String(errors[k]?.message ?? ""),
+        targetId: `c-${k}`,
+      }));
+  }, [errors]);
 
   const onSubmit = async (values: ContactPayload) => {
     setStatus({ kind: "submitting" });
@@ -123,7 +154,51 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+    <form
+      onSubmit={handleSubmit(onSubmit, () => {
+        setSubmitAttempted(true);
+        // Focus the error summary so screen readers announce it and
+        // sighted keyboard users can tab to the offending field link.
+        setTimeout(() => summaryRef.current?.focus(), 50);
+      })}
+      noValidate
+      className="space-y-5"
+    >
+      {submitAttempted && errorList.length > 0 && (
+        <div
+          ref={summaryRef}
+          tabIndex={-1}
+          role="alert"
+          aria-labelledby="c-error-summary-title"
+          className="border-danger/40 bg-danger/10 text-danger rounded-lg border p-4"
+        >
+          <p id="c-error-summary-title" className="font-sans text-sm font-semibold">
+            {errorList.length === 1
+              ? "There is 1 problem with this form"
+              : `There are ${errorList.length} problems with this form`}
+          </p>
+          <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
+            {errorList.map((e) => (
+              <li key={e.field}>
+                <a
+                  href={`#${e.targetId}`}
+                  className="underline underline-offset-4"
+                  onClick={(evt) => {
+                    evt.preventDefault();
+                    const el = document.getElementById(e.targetId);
+                    if (el) {
+                      (el as HTMLInputElement | HTMLTextAreaElement).focus();
+                      el.scrollIntoView({ block: "center", behavior: "smooth" });
+                    }
+                  }}
+                >
+                  {e.label}: {e.message}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* Honeypot — visually hidden + aria-hidden + tab-out */}
       <div className="sr-only" aria-hidden>
         <label htmlFor="c-website">Website (leave empty)</label>
