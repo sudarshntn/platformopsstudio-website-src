@@ -1,0 +1,29 @@
+---
+title: "Policy as Code: OPA, Kyverno, Cedar — Which Wins in 2026?"
+edition: 12
+date: 2026-08-17
+excerpt: "Three years ago OPA was the answer. Today Kyverno owns Kubernetes admission, Cedar is winning app-level auth, and the single-tool era is quietly ending — how to match each engine to its right control plane."
+tags: [PolicyAsCode, OPA, Kyverno, Cedar, PlatformEngineering, Kubernetes]
+slug: edition-12-policy-as-code-opa-kyverno-cedar
+linkedInUrl: https://www.linkedin.com/pulse/policy-code-opa-kyverno-cedar-which-wins-2026-sudarshan-narayanan-lhync
+cover: /assets/img/banners/banner-newsletter-policy-as-code.svg
+---
+
+Three years ago, OPA was the default answer to "how do we do policy as code." That single-tool consensus is over. Kyverno reached CNCF Graduated status, Cedar went open source out of AWS, and Conftest quietly became the easiest on-ramp for CI gating. The 2026 answer isn't picking one — it's matching the right engine to each control plane.
+
+## Where each tool actually wins
+
+- **OPA / Rego** — still the right call for cross-domain policy that spans Kubernetes, service-to-service auth, and application logic in one language, and for regulated environments where its audit trail and formal-verification story satisfy compliance reviewers. The tradeoff is Rego's learning curve, consistently the top adoption blocker teams report.
+- **Kyverno** — became the default admission controller for new Kubernetes platforms because its policies are just Kubernetes-native YAML: readable by any cluster engineer, and they slot straight into GitOps, RBAC, and the normal CRD lifecycle. It struggles the moment policy needs to reach outside Kubernetes.
+- **Cedar** — AWS's internal authorization language, now open source, and the standout for fine-grained, application-level authorization (especially multi-tenant SaaS) rather than infrastructure policy. It's not competing with Kyverno; it's winning OPA's old application-authorization use case.
+- **Conftest** — the smallest of the four and often the most useful: a CLI that runs Rego against manifests, Terraform, or Dockerfiles in CI, catching violations at PR time before anything reaches a cluster. Most mature orgs run it even when something else handles runtime enforcement.
+
+## The pattern that's converged
+
+Kyverno for Kubernetes admission control covers the majority of policies. Conftest gates the same rules earlier, in CI. Cedar takes application-level authorization. OPA remains for policy that genuinely needs to cross domains. Standardizing on a single engine across all four jobs is the 2023 argument — 2026's mature platform teams pick per control plane instead.
+
+### Why this matters for platform teams
+
+If your org inherited an OPA-everywhere mandate from a few years back, this is a good moment to audit which policies are actually cross-domain versus which are pure Kubernetes admission rules that would read far more clearly — and onboard new engineers far faster — as Kyverno YAML instead. The migration cost is usually smaller than the ongoing tax of forcing every engineer through Rego for rules that don't need it.
+
+The full issue on LinkedIn goes further into designing a policy strategy across all four tools together, plus reader comments from platform teams running this exact mix in production.

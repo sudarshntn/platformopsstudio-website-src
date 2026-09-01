@@ -1,0 +1,25 @@
+---
+title: "Turning NGINX Open Source into a Lightweight API Gateway Using Lua"
+date: 2025-06-17
+excerpt: "How to turn plain NGINX into a scriptable API gateway using Lua via ngx_http_lua_module — auth, rate limiting, and dynamic routing without commercial gateway costs."
+tags: [NGINX, Lua, APIGateway, OpenResty, Microservices]
+slug: turning-nginx-open-source-into-a-lightweight-api-gateway-using-lua
+cover: /assets/img/banners/banner-nginx-lua-gateway.svg
+mediumUrl: https://medium.com/@ramsudarsan/turning-nginx-open-source-into-a-lightweight-api-gateway-using-lua-efa909fccfd0
+---
+
+Commercial API gateways like Kong, Tyk, or the big cloud providers' offerings are popular for good reason, but they come with added cost and operational surface area. This article walks through turning plain **NGINX Open Source** into a lightweight, scriptable API gateway using Lua via `ngx_http_lua_module` — a good fit for low-resource environments, edge deployments, or gateways with custom requirements off-the-shelf tools don't cover well.
+
+## Why NGINX + Lua
+
+Pairing NGINX's speed with Lua scripting (through OpenResty, or a manually compiled module) gets you complete control over request/response behavior, scriptable routing, and built-in rate limiting and authentication — all with zero licensing cost.
+
+## What the walkthrough covers
+
+- Installing OpenResty (bundles NGINX, LuaJIT, and the Lua module)
+- A minimal gateway `nginx.conf` with a shared-memory rate-limit store
+- JWT authentication inside `access_by_lua_block` via `lua-resty-jwt`
+- IP-based rate limiting using NGINX's shared dictionary
+- Dynamic request routing based on URI path or headers
+
+The full code — including the Dockerfile referenced in the post — is linked from the Medium article above.

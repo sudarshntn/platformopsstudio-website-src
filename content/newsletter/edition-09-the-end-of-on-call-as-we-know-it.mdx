@@ -1,0 +1,34 @@
+---
+title: "The End of On-Call As We Know It"
+edition: 9
+date: 2026-07-27
+excerpt: "A 2026 Honeycomb survey of 1,200 SREs found 38% are actively shrinking rotations because of AI-assisted triage. The technology story is easy; the human redesign is the hard part most orgs are skipping."
+tags: [OnCall, SRE, AIOps, IncidentResponse, PlatformEngineering]
+slug: edition-09-the-end-of-on-call-as-we-know-it
+linkedInUrl: https://www.linkedin.com/pulse/end-on-call-we-know-sudarshan-narayanan-rmxzc
+cover: /assets/img/banners/banner-newsletter-end-of-on-call.svg
+---
+
+On-call has been the last largely unautomated workflow in engineering. A 2026 Honeycomb survey of 1,200 SREs found 38% are actively shrinking their rotations because of AI-assisted triage — and most engineering orgs haven't yet thought through what happens to the humans, the shift structure, and the career ladder once that's real.
+
+## What AI on-call actually does today (and doesn't)
+
+Production AI reliably handles initial alert triage across logs, metrics, and traces; runbook execution for known incident patterns; drafting incident communications; and deciding whether an incident needs a human at all. What it still can't do reliably: novel root-cause analysis, causal reasoning across seemingly unrelated systems, or judgment calls about customer impact. That split — mature at routine triage, immature at genuine novelty — is exactly what's driving the restructuring below.
+
+## The three-tier response model
+
+- **Tier 1 — agent triages.** The agent correlates signals, checks recent deploys, matches known patterns, and either resolves the incident or escalates. The human never wakes up.
+- **Tier 2 — agent escalates with context.** If Tier 1 can't resolve it, the human gets a curated brief: what's affected, what the agent already tried, and the top remediation paths ranked by confidence — not just a bare page.
+- **Tier 3 — human decides.** The human isn't discovering the problem anymore. They're choosing between agent-suggested options or diagnosing something genuinely novel the agent couldn't pattern-match. On-call becomes decision work, not detection work.
+
+Teams running mature pilots of this model report Tier-1 alert volume dropping 60–80% — the incidents that do reach a human are the ones that genuinely needed one.
+
+## The redesign most orgs are skipping
+
+If 70% of the noise disappears, rotation size can shrink — that's the honest math, and it's what's showing up in the Honeycomb data. But smaller doesn't mean easier: the incidents that survive the AI triage layer are harder on average, because the easy ones never reach the human. That argues for fewer people with a higher senior-to-junior ratio, longer engagement per incident, more architecture-level context per rotation, and a different fatigue pattern — fewer pages, but each one deeper. Most orgs are shrinking the rotation without redesigning the shift itself, and that's the mistake: a smaller rotation with the old shift structure burns people out faster, not slower.
+
+### Why this matters for platform teams
+
+If you're piloting AI-assisted triage, the organizational redesign deserves the same planning cycle as the technical rollout — decide the new rotation shape and seniority mix *before* headcount shrinks, not after the first burnout cycle proves the old shift structure doesn't fit the new incident mix.
+
+The full issue on LinkedIn goes deeper into what "agent-executable" runbooks look like, in contrast to the human-readable ones most teams still have.

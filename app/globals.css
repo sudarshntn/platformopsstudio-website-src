@@ -187,3 +187,104 @@ body {
   background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
   color: var(--color-text);
 }
+
+/* ── PROSE (MDX body rendering) ─────────────────────────────
+   Wrap any long-form MDX body in a container with .prose. All type
+   uses the design tokens — no @tailwindcss/typography default palette.
+   The MDX components map (lib/content/mdx-components.tsx) handles
+   headings and links through primitives; the .prose selectors here
+   pick up the leftover elements (paragraphs, lists, blockquotes,
+   images, code blocks emitted by rehype-pretty-code, etc.). */
+.prose {
+  color: var(--color-text);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  max-width: 68ch;
+}
+
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+.prose > h2 {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-4);
+}
+.prose > h3 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+}
+.prose > h4 {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-2);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  color: var(--color-text);
+}
+.prose ul {
+  list-style-type: disc;
+}
+.prose ol {
+  list-style-type: decimal;
+}
+.prose li + li {
+  margin-top: 0.5em;
+}
+
+.prose blockquote {
+  padding: 0.4em 1.4em;
+  border-left: 3px solid var(--color-primary);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose strong {
+  color: var(--color-text);
+  font-weight: 700;
+}
+.prose em {
+  font-style: italic;
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-8) 0;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+/* Block code — rehype-pretty-code emits <pre><code data-language="…">
+   with per-token <span style="color:…"> inline colors. We set the
+   surface + padding here and let the inline styles handle syntax. */
+.prose pre {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  display: grid; /* rehype-pretty-code line grid */
+}
+.prose :not(pre) > code {
+  background: var(--color-surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--color-text);
+}

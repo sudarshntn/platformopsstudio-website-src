@@ -1,0 +1,35 @@
+---
+title: "GitOps at Scale: Argo CD, Flux, and the Patterns That Survive 500 Clusters"
+edition: 10
+date: 2026-08-03
+excerpt: "CNCF's 2026 survey puts GitOps adoption at 82% of Kubernetes users, but only 23% report it 'just working' at scale. The gap is where the real engineering happens — the repo-structure debate, settled, and the multi-cluster patterns that actually hold up past 50."
+tags: [GitOps, ArgoCD, Flux, Kubernetes, MultiCluster, PlatformEngineering]
+slug: edition-10-gitops-at-scale-argo-cd-flux-500-clusters
+linkedInUrl: https://www.linkedin.com/pulse/gitops-scale-argo-cd-flux-patterns-survive-500-sudarshan-narayanan-vcsgc
+cover: /assets/img/banners/banner-newsletter-gitops-at-scale.svg
+---
+
+GitOps works beautifully on a laptop, and fine for one team. Then a platform hits 50 clusters and discovers "declarative" was the easy part. CNCF's 2026 survey puts GitOps adoption at 82% of Kubernetes users — but only 23% report it "just working" at scale. That gap is where the real engineering happens.
+
+## Argo CD vs. Flux: the choice that stopped being religious
+
+Five years ago this was a holy war. In 2026 both tools handle multi-cluster natively, both graduated as CNCF projects, both integrate progressive delivery, and both have mature RBAC and drift handling — so the decision comes down to ecosystem fit rather than raw capability. Argo CD stayed opinionated: a rich UI and an integrated suite (Workflows, Rollouts, Events) for teams that want a platform with the battery included. Flux stayed minimal: composable, CLI-first controllers for teams that want to assemble their own platform. Mid-size orgs tend toward Argo CD because the UI matters to them; platform-heavy orgs tend toward Flux because composability matters more.
+
+## The repo-structure debate, settled
+
+Not a single monorepo (merge conflicts and CI time become intolerable). Not a repo per microservice (hundreds of repos, zero discoverability). Not split by environment (fights promotion patterns, makes rollback painful). The pattern that's converged: **repo per team, or repo per business domain** — two to five repositories per platform-owning group, sized so ownership stays clear and cognitive load stays bounded. It maps directly to Team Topologies: teams own what they can hold in their heads.
+
+## What actually survives past 50 clusters
+
+- **Hub-and-spoke** — a management cluster runs Argo CD or Flux; workload clusters are managed from there, centralizing the control plane while workloads stay distributed.
+- **ApplicationSets (Argo CD)** — template-driven application generation across clusters from label or selector-based definitions. This is the specific pattern that made 500-cluster deployments manageable.
+- **Cluster API integration** — provisioning clusters declaratively as part of the GitOps flow itself, so drift detection extends to cluster lifecycle, not just app state.
+- **Progressive rollout across clusters** — deploying to a small percentage of clusters first, monitoring, then expanding: canary deployment applied at the cluster level, not just the pod level.
+
+The anti-pattern that works at 10 clusters and collapses at 50: running Argo CD or Flux independently on every cluster with no coordination layer above them.
+
+### Why this matters for platform teams
+
+If your GitOps repo structure grew organically rather than by design, the repo-per-team consolidation is usually the highest-leverage single change available — it's less code than migrating tools, and it's the difference that determines whether your next 10x in cluster count is a quarter of work or a multi-year slog.
+
+The full issue on LinkedIn includes the reader discussion on ApplicationSets versus Flux's Kustomize-based multi-cluster approach.

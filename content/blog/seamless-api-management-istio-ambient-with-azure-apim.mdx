@@ -1,0 +1,24 @@
+---
+title: "Seamless API Management: Integrating Istio Ambient Mesh with Azure APIM"
+date: 2025-04-11
+excerpt: "Combining Istio Ambient Mesh with Azure API Management for zero-trust, sidecar-less service mesh plus enterprise API gateway capabilities on AKS or multi-cloud."
+tags: [IstioAmbient, AzureAPIM, AKS, ServiceMesh, CloudNative, ZeroTrust, APIManagement]
+slug: seamless-api-management-istio-ambient-with-azure-apim
+cover: /assets/img/banners/banner-istio-azure-apim.svg
+mediumUrl: https://medium.com/@ramsudarsan/seamless-api-management-integrating-istio-ambient-mesh-with-azure-apim-4058fa213f4e
+---
+
+Service meshes like **Istio Ambient** give you sidecar-free, secure, low-overhead traffic management for cloud-native microservices. **Azure API Management (APIM)** is a mature solution for exposing, managing, and securing APIs at scale. This article covers integrating the two so you get Istio's L7 policies, telemetry, and zero-trust security together with APIM's gateway and management capabilities.
+
+## Why combine them
+
+- API gateway-level security via tokens, rate-limiting, and logging (APIM)
+- Sidecar-less L7 routing and telemetry (Istio Ambient)
+- Centralized API visibility for better developer productivity
+- Zero-trust networking with mTLS and fine-grained policies
+
+## How the pieces fit
+
+The architecture combines Istio Ambient's ztunnel and L7 proxies with Azure APIM acting as the public entry point. Traffic arriving at APIM flows into the mesh, where it's processed according to Ambient's security and observability policies — giving you intelligent ingress, API-level management, and secure service-to-service communication in one design.
+
+The full walkthrough — deploying APIM in front of an AKS cluster, labeling namespaces for Ambient mode, and exposing services through the Istio Gateway API — is in the Medium post linked above.

@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 
 type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-type HeadingProps = {
+export type HeadingProps = {
   readonly as: HeadingLevel;
   /** Visual size — decoupled from `as` so semantics can be h2 with h4 sizing, etc. */
   readonly level?: HeadingLevel;

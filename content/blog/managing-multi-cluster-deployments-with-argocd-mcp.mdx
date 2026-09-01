@@ -1,0 +1,26 @@
+---
+title: "Managing Multi-Cluster Deployments with ArgoCD MCP"
+date: 2025-05-29
+excerpt: "Using ArgoCD Multi-Cluster Projects (MCP) to centrally govern GitOps deployments across distributed Kubernetes clusters — one control plane, per-cluster autonomy."
+tags: [ArgoCD, GitOps, MultiCluster, Kubernetes, PlatformEngineering]
+slug: managing-multi-cluster-deployments-with-argocd-mcp
+cover: /assets/img/banners/banner-argocd-mcp-multicluster.svg
+mediumUrl: https://medium.com/@ramsudarsan/managing-multi-cluster-deployments-with-argocd-mcp-43c37fa90c68
+---
+
+As organizations scale globally — balancing hybrid cloud strategy, regulatory requirements, and fault tolerance — multi-cluster Kubernetes management stops being a nice-to-have and becomes a mission-critical necessity. **ArgoCD Multi-Cluster Projects (MCP)** give you a way to define a single ArgoCD project that spans multiple clusters, centralizing control without giving up per-cluster autonomy.
+
+## What an MCP project gives you
+
+- Applications deployed across different clusters from one ArgoCD instance
+- Access controls governing who can deploy and manage each application
+- Resource whitelisting and blacklisting per project
+- Source and destination restrictions — where code comes from, and where it's allowed to land
+
+In practice, you can deploy to staging, dev, and production clusters from a single ArgoCD control plane, keep environments logically separated while staying on one consistent GitOps workflow, and apply governance, RBAC, and compliance rules uniformly.
+
+## How it's wired
+
+ArgoCD connects to external clusters as registered destinations (`argocd cluster add`), and each Application manifest specifies its target via a `destination` field. An MCP project layers access rules on top, allowing or denying which clusters a given project is permitted to touch.
+
+The full walkthrough — installing ArgoCD, registering clusters, and defining the project YAML — is in the Medium post linked above.

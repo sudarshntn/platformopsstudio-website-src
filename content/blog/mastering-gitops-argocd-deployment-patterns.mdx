@@ -1,0 +1,20 @@
+---
+title: "Mastering GitOps: ArgoCD Deployment Patterns for Scalable Kubernetes Delivery"
+date: 2025-04-13
+excerpt: "Common GitOps deployment patterns using ArgoCD, from single-repo apps to multi-cluster progressive delivery — with pros, cons, and sample Application manifests."
+tags: [GitOps, ArgoCD, DevOps, Kubernetes, CICD, ProgressiveDelivery, PlatformEngineering, CloudNative]
+slug: mastering-gitops-argocd-deployment-patterns
+cover: /assets/img/banners/banner-argocd-deployment-patterns.svg
+mediumUrl: https://medium.com/@ramsudarsan/mastering-gitops-argocd-deployment-patterns-for-scalable-kubernetes-delivery-871817c9bd13
+---
+
+As Kubernetes adoption grows, GitOps has become the default way to deploy, manage, and operate cloud-native applications — and **ArgoCD** is one of the most widely used tools for it. This article rounds up the deployment patterns that show up again and again in real ArgoCD setups.
+
+## Common ArgoCD deployment patterns
+
+- **Single repo, single app** — one Git repository per application, each with its own ArgoCD Application object. Simple; doesn't scale to large microservices estates.
+- **Monorepo** — all application manifests in one repo under separate folders. Centralized control, ideal for platform teams — but needs discipline to stay organized.
+- **Multi-environment** — separate folders or branches for dev, staging, prod. Clean environment isolation and safer, progressive releases, at the cost of managing config drift.
+- **Multi-cluster** — ArgoCD manages applications across several clusters. Well suited to hybrid or multi-cloud, with added complexity of cluster secrets and context management.
+
+Each pattern in the full Medium post comes with a sample `Application` manifest and a clear pros/cons breakdown — worth reading directly if you're choosing a layout for a new ArgoCD rollout.
