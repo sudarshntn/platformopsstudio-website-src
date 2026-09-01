@@ -1,28 +1,56 @@
-import { Container, Heading, Section, Text } from "@/components/ui";
+import type { Metadata } from "next";
+import { About } from "@/components/sections/About";
+import { Approach } from "@/components/sections/Approach";
+import { DualCTA } from "@/components/sections/DualCTA";
+import { Hero } from "@/components/sections/Hero";
+import { NewsletterLatest } from "@/components/sections/NewsletterLatest";
+import { Subscribe } from "@/components/sections/Subscribe";
+
+export const metadata: Metadata = {
+  title: {
+    // Explicitly override the root layout's template on the home page —
+    // the title should just be the site name, not "Home · PlatformOpsStudio".
+    absolute: "PlatformOpsStudio — Platform Engineering & DevSecOps",
+  },
+  description:
+    "Blogs, videos, and a weekly newsletter for platform teams shipping in Kubernetes, cloud-native, and agentic-AI environments.",
+  openGraph: {
+    type: "website",
+    title: "PlatformOpsStudio — Platform Engineering & DevSecOps",
+    description:
+      "Blogs, videos, and a weekly newsletter for platform teams shipping in Kubernetes, cloud-native, and agentic-AI environments.",
+    images: [
+      {
+        url: "/assets/img/banners/banner-mcp-orchestrator.svg",
+        width: 1200,
+        height: 630,
+        alt: "PlatformOpsStudio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PlatformOpsStudio — Platform Engineering & DevSecOps",
+    description:
+      "Blogs, videos, and a weekly newsletter for platform teams shipping in Kubernetes, cloud-native, and agentic-AI environments.",
+  },
+};
 
 /**
- * Stage 2 stub. Real hero + section composition arrives in stage 4;
- * the 3D scene lands in stage 5.
+ * Home page. Composed from section components under
+ * components/sections/*; all copy in content/copy/home.ts. The
+ * Stage-5 3D scene lands behind the Hero without changing this
+ * composition.
  */
 export default function HomePage() {
   return (
-    <Section spacing="lg">
-      <Container>
-        <Text
-          as="div"
-          variant="small"
-          className="text-primary mb-3 font-mono tracking-widest uppercase"
-        >
-          Stage 2 · route stub
-        </Text>
-        <Heading as="h1" level="h1">
-          PlatformOpsStudio
-        </Heading>
-        <Text variant="muted" className="mt-4 max-w-2xl">
-          Platform Engineering &amp; DevSecOps in Texas — blogs, videos, and a weekly newsletter.
-          Full home composition (hero, about, latest issues, CTA bands) arrives in stage 4.
-        </Text>
-      </Container>
-    </Section>
+    <>
+      <Hero />
+      <About />
+      <Approach />
+      <NewsletterLatest />
+      <Subscribe />
+      <DualCTA />
+    </>
   );
 }

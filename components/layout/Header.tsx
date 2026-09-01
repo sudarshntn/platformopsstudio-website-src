@@ -79,16 +79,19 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                window.location.href = "/contact";
-              }}
-              className="hidden md:inline-flex"
-            >
-              Learn With Me
-            </Button>
+            {/* Wrapper controls visibility so we don't fight Button's own
+                inline-flex display utility on the mobile breakpoint. */}
+            <div className="hidden md:block">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  window.location.href = "/contact";
+                }}
+              >
+                Learn With Me
+              </Button>
+            </div>
 
             <button
               type="button"
