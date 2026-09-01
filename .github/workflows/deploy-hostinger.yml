@@ -1,0 +1,78 @@
+name: Deploy · Hostinger
+
+on:
+  push:
+    branches: [next-rebuild]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & rsync to Hostinger
+    runs-on: ubuntu-latest
+    if: >-
+      ${{ vars.DEPLOY_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://platformopsstudio.com
+
+      # Prune to production deps only — .next depends on runtime deps
+      # in node_modules; devDeps are noise on the server.
+      - name: Prune dev deps
+        run: pnpm prune --prod
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.HOSTINGER_SSH_KEY }}
+
+      - name: Add Hostinger host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.HOSTINGER_SSH_PORT }} -H ${{ secrets.HOSTINGER_SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # rsync the runtime artifact into a sha-suffixed release directory
+      # on the server so rollback is a single `ln -sfn`.
+      - name: rsync release
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          RELEASE_DIR="${{ secrets.HOSTINGER_APP_DIR }}/../releases/${SHA}"
+          ssh -p ${{ secrets.HOSTINGER_SSH_PORT }} \
+              ${{ secrets.HOSTINGER_SSH_USER }}@${{ secrets.HOSTINGER_SSH_HOST }} \
+              "mkdir -p '${RELEASE_DIR}'"
+          rsync -az --delete \
+              -e "ssh -p ${{ secrets.HOSTINGER_SSH_PORT }}" \
+              --exclude='.next/cache' \
+              .next public package.json pnpm-lock.yaml node_modules \
+              ${{ secrets.HOSTINGER_SSH_USER }}@${{ secrets.HOSTINGER_SSH_HOST }}:"${RELEASE_DIR}/"
+
+      - name: Swap symlink + restart
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          ssh -p ${{ secrets.HOSTINGER_SSH_PORT }} \
+              ${{ secrets.HOSTINGER_SSH_USER }}@${{ secrets.HOSTINGER_SSH_HOST }} \
+              "cd ${{ secrets.HOSTINGER_APP_DIR }}/.. && \
+               ln -sfn releases/${SHA} nextapp && \
+               touch nextapp/.restart && \
+               ls -1t releases | tail -n +6 | xargs -I {} rm -rf releases/{}"
