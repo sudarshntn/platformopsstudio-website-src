@@ -1,105 +1,107 @@
-# PlatformOpsStudio — Website Source
+# PlatformOpsStudio — Website (Next.js rebuild)
 
-Static site source for [platformopsstudio.com](https://platformopsstudio.com), rebuilt from the
-previous UENI-hosted site content for deployment on **Hostinger's Web App / Website hosting**.
+**You are on the `next-rebuild` branch.** The Next.js 15 rewrite of
+[platformopsstudio.com](https://platformopsstudio.com) is in progress here across a 14-stage
+plan. The live site continues to ship from `main` as plain HTML — see the `README.md` at that
+branch for the static-site setup.
 
-Plain HTML, CSS, and vanilla JS — no build step, no framework, no dependencies.
+## Requirements
 
-`package.json` is included only so hosts that auto-detect Node projects (e.g. an "import"
-step that expects one) have something to read; it declares zero dependencies and its `build`
-script is a no-op, since there is nothing to compile. `npm start` just serves the folder as-is
-for local preview (via `npx serve`) — it's not required for deployment.
+- Node 20+ (the project is being developed on Node 22 LTS)
+- pnpm 9+ (installed globally; `packageManager` field pins pnpm to 11.x for consistency)
 
-## Structure
+## Local setup
 
-```
-.
-├── package.json                 No deps; build is a no-op (see note above)
-├── index.html                  Home
-├── blogs.html                  Blog listing (formerly resources.html)
-├── resources/                  Individual blog article pages
-│   ├── the-mcp-orchestrator-the-conductor-your-ai-stack-has-been-missing.html
-│   ├── empowering-teams-training-and-onboarding-in-the-gitops-framework.html
-│   ├── from-commit-to-production-gitops-promotion-workflows-with-kargo-argo-cd.html
-│   ├── embracing-agile-platform-engineering-revolutionizes-project-management.html
-│   ├── how-devsecops-transforms-modern-software-development-practices.html
-│   └── ... (14 articles total, several cross-posted from Medium)
-├── newsletter.html             "The Platform Pulse" archive/landing page
-├── newsletter/                 One page per issue, e.g. edition-12-policy-as-code-...html
-├── contact.html
-├── legal-notice.html
-├── privacy-policy.html
-├── 404.html
-└── assets/
-    ├── css/style.css
-    ├── js/main.js
-    └── img/ (logo, hero, favicon, banners/)
+```bash
+pnpm install
+cp .env.example .env.local  # fill in values you have; blanks are OK for stage 0
+pnpm dev                    # opens http://localhost:3000
 ```
 
-The `resources/` folder name was kept as-is for the individual article pages even though the
-listing page is now `blogs.html` — it's an internal path, not a user-facing label.
+## Scripts
 
-Every page footer links out to the five PlatformOpsStudio social profiles (Facebook, Instagram,
-YouTube, X, LinkedIn) as inline SVG icons — no external icon font or JS dependency.
+| Command          | What it does                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`       | Next.js dev server with Fast Refresh                                                  |
+| `pnpm build`     | Production build                                                                      |
+| `pnpm start`     | Serve the production build                                                            |
+| `pnpm lint`      | ESLint (flat config, `next/core-web-vitals` + `next/typescript` + Prettier reconcile) |
+| `pnpm typecheck` | `tsc --noEmit` in strict mode                                                         |
+| `pnpm test`      | Vitest (`--passWithNoTests` — no specs yet in stage 0)                                |
+| `pnpm e2e`       | Playwright (no specs yet)                                                             |
 
-### Newsletter section
+Pre-commit hook runs `lint-staged` (ESLint + Prettier on staged files).
 
-"The Platform Pulse" is written and published on LinkedIn first
-(linkedin.com/newsletters/the-platform-pulse-7468764234068369410) every Monday, then archived on
-this site. Each issue page under `newsletter/` is a distinct, original summary and commentary
-piece — not a duplicate of the LinkedIn post — with a callout linking back to the original at
-the top, and a `newsletter-band` CTA at the bottom pushing LinkedIn subscriptions. This is a
-deliberate SEO choice: because the content differs meaningfully from the LinkedIn version, no
-`rel="canonical"` override was added, so each issue can be indexed and rank on its own here.
-The `.signup-form` email capture (same mailto fallback pattern as the contact form, wired in
-`assets/js/main.js`) is there for future-proofing, not a live mailing list yet — the LinkedIn
-subscribe link is the only channel that actually delivers issues today. To add the next issue:
-copy an existing `newsletter/edition-NN-*.html` file, update its content and banner, add a card
-for it to `newsletter.html`'s archive grid, and update the "More Issues" cards on neighboring
-issue pages.
+## Environment variables
 
-## Deploying to Hostinger (Git-based Web App deploy)
+See `.env.example`. Summary:
 
-Hostinger's Git integration pulls the repo as-is into `public_html` — there is **no build
-step**, so this static structure deploys directly with nothing else to configure.
+- `NEXT_PUBLIC_SITE_URL` — public origin, used by `metadataBase`. Client-safe.
+- `RESEND_API_KEY` — server-only, for the contact form endpoint (stage 6+). Leave blank in
+  dev; the form falls back to `mailto:` when unset.
+- `CONTACT_TO_EMAIL` — server-only, destination inbox for contact-form submissions.
 
-### One-time setup
+## Project layout
 
-1. Log in to **hPanel** → **Websites** → select the site (or **Add Website → Deploy Web App**
-   if platformopsstudio.com isn't added yet).
-2. Open the site's **Dashboard → Advanced → Git**.
-3. Click **Connect with GitHub**, authorize the Hostinger GitHub App, and grant it access to
-   `sudarshntn/platformopsstudio-website-src` (use **Refresh repositories** if it doesn't show
-   up right away).
-4. Set **Branch** to `main` and leave **Deploy directory** at the default (root / `public_html`).
-5. Click **Deploy** to run the first deployment.
-6. Point the `platformopsstudio.com` domain's DNS/nameservers at Hostinger (or add it as the
-   site's domain in hPanel) and issue the free SSL certificate under **Websites → SSL**.
+```
+app/               Next.js App Router (layout.tsx, page.tsx, globals.css)
+components/
+  ui/              Primitives — buttons, inputs, cards
+  layout/          Header, footer, cookie banner, container
+  three/           R3F scenes and shaders (stages 8–10)
+  motion/          Animated components (Framer Motion or equivalent)
+  forms/           Contact form and form primitives
+content/
+  blog/            One MDX/Markdown file per blog post (stage 5 target)
+  newsletter/      One file per Platform Pulse issue (stage 5 target)
+lib/               Shared TS utilities (typed content loaders, formatters, etc.)
+public/assets/img/ Migrated images (raster + banner SVGs) — moved in stage 2
+docs/discovery.md  Full IA, content inventory, image inventory, open questions
+```
 
-### Continuous deployment (already automatic — nothing to toggle)
+Legacy static source (`index.html`, `blogs.html`, `resources/`, `newsletter/`, `assets/`) is
+kept at the repo root on this branch so `main` can still auto-deploy unchanged during the
+migration. Next.js's App Router takes precedence over root-level `.html` files, so both can
+coexist. They will be deleted at cutover.
 
-There's no separate "auto-deploy" switch to find. Once step 3–5 above is done, Hostinger
-registers a GitHub webhook on the repo, and **every push to `main` redeploys automatically**:
-push → GitHub fires the webhook → Hostinger pulls the latest commit → site is live, usually
-within seconds since there's no build step. The Git panel shows an **"Auto-deployment"** chip
-while that webhook connection is healthy, and each deploy (auto or manual) is listed in the
-panel's history. Use the **Redeploy** button on the Overview tab only if you need to force a
-pull outside of a push (e.g. after changing the branch or deploy directory).
+## Stage roadmap
 
-If deploys stop showing up after a push, check that chip first — a revoked GitHub App
-authorization or a renamed/force-pushed branch is the usual cause.
+Fourteen stages, one per PR onto `next-rebuild`. Sequence chosen so each stage is
+independently shippable and reviewable.
 
-## Contact form
+| Stage | Deliverable                                                                                               |
+| ----- | --------------------------------------------------------------------------------------------------------- |
+| 0     | Scaffold + discovery doc (this branch's initial commit)                                                   |
+| 1     | Layout, header/footer, cookie banner, global chrome                                                       |
+| 2     | Design tokens, typography (`next/font`), image migration to `public/`                                     |
+| 3     | UI primitives — buttons, cards, form inputs, chips, section wrappers                                      |
+| 4     | Metadata, `robots.txt`, `sitemap.xml`, OG images, JSON-LD                                                 |
+| 5     | Content migration — legacy HTML → MDX in `content/blog` and `content/newsletter`, typed loaders in `lib/` |
+| 6     | Contact page + Resend-backed contact form Route Handler + rate limiting                                   |
+| 7     | Blog index + individual post pages                                                                        |
+| 8     | Newsletter landing + individual issue pages                                                               |
+| 9     | Home page — hero, About/Approach, Latest Newsletter tie-in, CTA bands                                     |
+| 10    | Three.js hero scene (see `components/three/`) — scope TBD in stage 3 design brief                         |
+| 11    | Motion / scroll-linked animations (see `components/motion/`)                                              |
+| 12    | Analytics + Consent Mode–aware cookie banner                                                              |
+| 13    | E2E test suite (Playwright) + a11y audit                                                                  |
+| 14    | Cutover — delete legacy static files, deploy Next.js build to Hostinger, DNS/SSL check, monitor           |
 
-The contact form on `contact.html` / `blogs.html` currently opens the visitor's email
-client via a `mailto:` link (see `assets/js/main.js`) — no backend required. To collect
-submissions server-side instead, swap the JS handler for a form service such as Hostinger's
-own form endpoint, [Formspree](https://formspree.io), or a serverless function, and point the
-`<form>`'s `action`/`method` at it.
+Open questions that must be answered before hitting the referenced stage are catalogued at
+the bottom of `docs/discovery.md` (§12).
 
-## Content notes
+## Branch model
 
-Content, copy, and images were captured from the live platformopsstudio.com (previously hosted
-on UENI) and rebuilt as static markup — UENI's original template source was not accessible, so
-this is a faithful rebuild rather than an export. Update copy directly in the relevant `.html`
-files; there is no CMS or templating layer.
+- `main` — plain static HTML site currently deployed to Hostinger. Every push
+  auto-deploys via Hostinger's Git integration. Do **not** merge `next-rebuild` into `main`
+  until stage 14.
+- `next-rebuild` — this branch. Next.js work happens here. Feature branches for each stage
+  should PR into `next-rebuild`, not `main`.
+- After stage 14 cutover, `main` is fast-forwarded to `next-rebuild` in a single commit and
+  Hostinger's Git deploy is switched from static-file serving to Next.js Node runtime.
+
+## Discovery
+
+Start with **`docs/discovery.md`**. It's the single source of truth for every page's
+structure, copy, images, external links, and rebuild notes. A new engineer should be able to
+recreate any page from that doc alone.

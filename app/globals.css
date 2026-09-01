@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/**
+ * Tailwind v4 uses CSS-first configuration — no tailwind.config.js.
+ * Design tokens go in @theme; they become CSS variables (--color-accent,
+ * --font-heading, etc.) that both Tailwind utilities and hand-written CSS
+ * can consume.
+ *
+ * The values below mirror the legacy static site so stage-N components can
+ * be dropped in without a design system rewrite. Refine once the design
+ * pass lands.
+ */
+@theme {
+  --color-accent: #065be3;
+  --color-accent-light: #3a7dff;
+
+  --color-bg-dark: #06070b;
+  --color-bg-dark-2: #0d0f16;
+  --color-bg-light: #f4f5f8;
+
+  --color-text-light: #f5f6fa;
+  --color-text-muted: #b7bcc9;
+  --color-text-dark: #14151a;
+  --color-text-dark-muted: #545862;
+
+  --color-border-dark: #1c1f29;
+  --color-border-light: #e2e4ea;
+
+  --font-heading: "Inconsolata", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
