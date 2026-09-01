@@ -5,6 +5,8 @@ import { Badge, Container, Heading, Image, Section, Text } from "@/components/ui
 import { getAllBlogs, getBlogBySlug } from "@/lib/content/load";
 import { mdxComponents } from "@/lib/content/mdx-components";
 import { mdxOptions } from "@/lib/content/mdx-options";
+import { article, breadcrumb, jsonLdScript } from "@/lib/jsonld";
+import { absoluteUrl } from "@/lib/site-url";
 
 type Params = { slug: string };
 
@@ -41,9 +43,31 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
   const post = getBlogBySlug(slug);
   if (!post) notFound();
   const fm = post.frontmatter;
+  const canonicalUrl = absoluteUrl(`/blogs/${fm.slug}`);
+  const articleLd = article({
+    headline: fm.title,
+    description: fm.excerpt,
+    datePublished: fm.date,
+    url: canonicalUrl,
+    tags: fm.tags,
+    ...(fm.cover ? { imageUrl: absoluteUrl(fm.cover) } : {}),
+  });
+  const crumbsLd = breadcrumb([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Blogs", url: absoluteUrl("/blogs") },
+    { name: fm.title, url: canonicalUrl },
+  ]);
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbsLd) }}
+      />
       <Section spacing="lg">
         <Container>
           <div className="max-w-3xl">

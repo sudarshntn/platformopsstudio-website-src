@@ -5,6 +5,8 @@ import { Badge, Container, Heading, Image, Section, Text } from "@/components/ui
 import { getAllNewsletters, getNewsletterBySlug } from "@/lib/content/load";
 import { mdxComponents } from "@/lib/content/mdx-components";
 import { mdxOptions } from "@/lib/content/mdx-options";
+import { article, breadcrumb, jsonLdScript } from "@/lib/jsonld";
+import { absoluteUrl } from "@/lib/site-url";
 
 type Params = { slug: string };
 
@@ -47,9 +49,33 @@ export default async function NewsletterEditionPage({
   const issue = getNewsletterBySlug(slug);
   if (!issue) notFound();
   const fm = issue.frontmatter;
+  const canonicalUrl = absoluteUrl(`/newsletter/${fm.slug}`);
+  const articleLd = article({
+    headline: fm.title,
+    description: fm.excerpt,
+    datePublished: fm.date,
+    url: canonicalUrl,
+    tags: fm.tags,
+    articleSection: "Platform Engineering",
+    ...(fm.cover ? { imageUrl: absoluteUrl(fm.cover) } : {}),
+  });
+  const crumbsLd = breadcrumb([
+    { name: "Home", url: absoluteUrl("/") },
+    { name: "Newsletter", url: absoluteUrl("/newsletter") },
+    { name: `Edition ${fm.edition}`, url: canonicalUrl },
+  ]);
 
   return (
-    <Section spacing="lg">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbsLd) }}
+      />
+      <Section spacing="lg">
       <Container>
         <div className="max-w-3xl">
           <Text
@@ -117,5 +143,6 @@ export default async function NewsletterEditionPage({
         </div>
       </Container>
     </Section>
+    </>
   );
 }

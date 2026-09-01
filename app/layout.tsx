@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 /*
@@ -45,9 +46,7 @@ export const metadata: Metadata = {
   },
   description:
     "Platform Engineering & DevSecOps blogs, videos, and a weekly newsletter — The Platform Pulse.",
-  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
-    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
-    : undefined,
+  metadataBase: new URL(SITE_URL),
 };
 
 // `themeColor` and viewport-scaling live in the separate viewport export

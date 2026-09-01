@@ -5,6 +5,7 @@ import { DualCTA } from "@/components/sections/DualCTA";
 import { Hero } from "@/components/sections/Hero";
 import { NewsletterLatest } from "@/components/sections/NewsletterLatest";
 import { Subscribe } from "@/components/sections/Subscribe";
+import { jsonLdScript, person, website } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,16 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      {/* JSON-LD: WebSite + Person. Consumed by search engines and
+          social crawlers for rich results. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(website) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(person) }}
+      />
       <Hero />
       <About />
       <Approach />
