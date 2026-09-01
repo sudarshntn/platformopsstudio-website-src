@@ -5,13 +5,16 @@ import readingTime from "reading-time";
 import type { ZodTypeAny } from "zod";
 import {
   BlogFrontmatter,
+  LegalFrontmatter,
   NewsletterFrontmatter,
   type LoadedBlog,
+  type LoadedLegal,
   type LoadedNewsletter,
 } from "./schema";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const NEWSLETTER_DIR = path.join(process.cwd(), "content", "newsletter");
+const LEGAL_DIR = path.join(process.cwd(), "content", "legal");
 
 /**
  * Read every .mdx file in `dir`, parse frontmatter, validate against
@@ -70,4 +73,28 @@ export function getAllNewsletters(): ReadonlyArray<LoadedNewsletter> {
 
 export function getNewsletterBySlug(slug: string): LoadedNewsletter | null {
   return getAllNewsletters().find((n) => n.frontmatter.slug === slug) ?? null;
+}
+
+/**
+ * Load one legal-page MDX by basename (e.g. "privacy-policy" →
+ * content/legal/privacy-policy.mdx). Returns null when the file
+ * doesn't exist — callers 404.
+ */
+export function getLegalPage(basename: string): LoadedLegal | null {
+  const filePath = path.join(LEGAL_DIR, `${basename}.mdx`);
+  if (!fs.existsSync(filePath)) return null;
+  const raw = fs.readFileSync(filePath, "utf8");
+  const parsed = matter(raw);
+  const result = LegalFrontmatter.safeParse(parsed.data);
+  if (!result.success) {
+    const first = result.error.issues[0];
+    const pathStr = first?.path?.join(".") ?? "(unknown)";
+    const msg = first?.message ?? "invalid frontmatter";
+    throw new Error(`[content] ${basename}.mdx: frontmatter.${pathStr} — ${msg}`);
+  }
+  return {
+    frontmatter: result.data,
+    body: parsed.content,
+    readingMinutes: Math.max(1, Math.round(readingTime(parsed.content).minutes)),
+  };
 }

@@ -2,6 +2,7 @@ import NextLink from "next/link";
 import { Container, Image, Text } from "@/components/ui";
 import { primaryNav } from "@/lib/nav";
 import { socialLinks } from "@/lib/social";
+import { CookiePrefsLink } from "@/components/consent/CookiePrefsLink";
 
 const legalLinks = [
   { label: "Legal Notice", href: "/legal-notice" },
@@ -72,6 +73,9 @@ export function Footer() {
                   </NextLink>
                 </li>
               ))}
+              <li>
+                <CookiePrefsLink />
+              </li>
             </ul>
           </div>
         </div>

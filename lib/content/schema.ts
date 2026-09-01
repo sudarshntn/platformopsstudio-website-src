@@ -59,3 +59,16 @@ export type LoadedItem<T> = {
 
 export type LoadedBlog = LoadedItem<BlogFrontmatter>;
 export type LoadedNewsletter = LoadedItem<NewsletterFrontmatter>;
+
+/**
+ * Legal-page frontmatter: title + a plain `updated` date string. Legal
+ * copy is short and rarely revised, so no tags/excerpt/cover here —
+ * every extra field is one more thing that can rot.
+ */
+export const LegalFrontmatter = z.object({
+  title: z.string().min(3),
+  updated: isoDate,
+});
+
+export type LegalFrontmatter = z.infer<typeof LegalFrontmatter>;
+export type LoadedLegal = LoadedItem<LegalFrontmatter>;

@@ -1,26 +1,43 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import { Container, Heading, Section, Text } from "@/components/ui";
+import { getLegalPage } from "@/lib/content/load";
+import { mdxComponents } from "@/lib/content/mdx-components";
+import { mdxOptions } from "@/lib/content/mdx-options";
 
 export const metadata: Metadata = {
   title: "Legal Notice",
-  description: "Business information for Platform Ops Studio.",
+  description:
+    "Business details, content ownership, and liability disclaimer for PlatformOpsStudio.",
 };
 
-/**
- * Stage 2 stub. Real page content ports from content/legal/*.mdx in
- * stage 12 (cookie banner + legal pages).
- */
 export default function LegalNoticePage() {
+  const page = getLegalPage("legal-notice");
+  if (!page) notFound();
+  const fm = page.frontmatter;
   return (
     <Section spacing="lg">
       <Container>
-        <Heading as="h1" level="h1">
-          Legal Notice
-        </Heading>
-        <Text variant="muted" className="mt-4 max-w-2xl">
-          Full legal notice content lands in stage 12 via MDX under
-          <code className="mx-1 font-mono">content/legal/</code>.
-        </Text>
+        <div className="max-w-3xl">
+          <Heading as="h1" level="h1">
+            {fm.title}
+          </Heading>
+          <Text variant="small" className="text-muted mt-3">
+            Last updated{" "}
+            <time dateTime={fm.updated}>
+              {new Date(fm.updated).toLocaleDateString("en-US", {
+                timeZone: "UTC",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </time>
+          </Text>
+          <article className="prose mt-8">
+            <MDXRemote source={page.body} components={mdxComponents} options={mdxOptions} />
+          </article>
+        </div>
       </Container>
     </Section>
   );
