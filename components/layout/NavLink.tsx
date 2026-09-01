@@ -2,7 +2,9 @@
 
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import { cn } from "@/lib/cn";
+import { useReducedMotion } from "@/lib/reduced-motion";
 import { isActive, type NavItem } from "@/lib/nav";
 
 type NavLinkProps = {
@@ -12,18 +14,18 @@ type NavLinkProps = {
 };
 
 /**
- * Client-side nav link. Reads the current pathname and sets
- * `aria-current="page"` + active styling when it matches. The
- * `variant` prop drives spacing/type-size differences between the
- * header row and the mobile drawer without duplicating the active-state
- * logic.
+ * Client-side nav link with shared-layout underline animation. The
+ * underline moves smoothly between links via `layoutId="nav-underline"`.
+ * Reduced motion: still shows the underline on the active item, but
+ * with no `layoutId` (so it appears instantly instead of animating).
  */
 export function NavLink({ item, variant = "header", onNavigate }: NavLinkProps) {
   const pathname = usePathname();
   const active = isActive(pathname, item);
+  const reduced = useReducedMotion();
 
   const base =
-    "font-sans font-semibold transition-colors duration-fast ease-out " + "hover:text-primary";
+    "relative font-sans font-semibold transition-colors duration-fast ease-out hover:text-primary";
   const variantClass =
     variant === "header"
       ? "text-sm text-text py-2"
@@ -38,6 +40,17 @@ export function NavLink({ item, variant = "header", onNavigate }: NavLinkProps) 
       {...(onNavigate !== undefined ? { onClick: onNavigate } : {})}
     >
       {item.label}
+      {active &&
+        variant === "header" &&
+        (reduced ? (
+          <span className="bg-primary absolute inset-x-0 -bottom-1 h-0.5" />
+        ) : (
+          <motion.span
+            layoutId="nav-underline"
+            className="bg-primary absolute inset-x-0 -bottom-1 h-0.5"
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          />
+        ))}
     </NextLink>
   );
 }

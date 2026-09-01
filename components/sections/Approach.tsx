@@ -1,12 +1,13 @@
 import NextLink from "next/link";
 import { Container, Heading, Section, Text } from "@/components/ui";
+import { Reveal } from "@/components/motion/Reveal";
 import { approachCopy } from "@/content/copy/home";
 
 export function Approach() {
   return (
     <Section spacing="lg" surface="bg" ariaLabelledby="approach-heading">
       <Container>
-        <div className="max-w-3xl">
+        <Reveal className="max-w-3xl">
           <Text
             as="div"
             variant="small"
@@ -26,7 +27,7 @@ export function Approach() {
           >
             {approachCopy.cta.label}
           </NextLink>
-        </div>
+        </Reveal>
       </Container>
     </Section>
   );

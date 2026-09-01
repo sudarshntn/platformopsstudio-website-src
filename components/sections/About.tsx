@@ -1,12 +1,13 @@
 import NextLink from "next/link";
 import { Container, Heading, Section, Text } from "@/components/ui";
+import { Reveal } from "@/components/motion/Reveal";
 import { aboutCopy } from "@/content/copy/home";
 
 export function About() {
   return (
     <Section spacing="lg" surface="surface" ariaLabelledby="about-heading">
       <Container>
-        <div className="max-w-3xl">
+        <Reveal className="max-w-3xl">
           <Text
             as="div"
             variant="small"
@@ -27,7 +28,7 @@ export function About() {
             </NextLink>
             .
           </Text>
-        </div>
+        </Reveal>
       </Container>
     </Section>
   );
