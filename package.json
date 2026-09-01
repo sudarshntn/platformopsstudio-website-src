@@ -1,16 +1,53 @@
 {
-  "name": "platformopsstudio-website-src",
-  "version": "1.0.0",
-  "description": "Static website source for platformopsstudio.com — plain HTML/CSS/JS, no build step required.",
+  "name": "platformopsstudio-website",
+  "version": "0.1.0",
   "private": true,
-  "license": "UNLICENSED",
+  "description": "PlatformOpsStudio.com — Next.js 15 App Router rebuild (in progress on the `next-rebuild` branch). Live static site continues to ship from `main`.",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "scripts": {
-    "start": "npx --yes serve . -l 8080",
-    "build": "echo \"No build step required — this is a static HTML/CSS/JS site.\""
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "e2e": "playwright test",
+    "prepare": "husky"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sudarshntn/platformopsstudio-website-src.git"
+  "dependencies": {
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
-  "homepage": "https://platformopsstudio.com"
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@playwright/test": "1.55.1",
+    "@tailwindcss/postcss": "4.1.14",
+    "@types/node": "22.10.5",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
+    "eslint": "9.36.0",
+    "eslint-config-next": "15.5.4",
+    "eslint-config-prettier": "10.1.5",
+    "husky": "9.1.7",
+    "lint-staged": "16.0.0",
+    "prettier": "3.6.2",
+    "prettier-plugin-tailwindcss": "0.6.14",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.7.3",
+    "vitest": "3.2.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,md,json,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
 }
