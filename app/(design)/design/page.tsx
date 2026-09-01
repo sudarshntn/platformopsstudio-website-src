@@ -8,6 +8,7 @@ import {
   FieldError,
   Heading,
   Icon,
+  Image,
   Input,
   Label,
   Link,
@@ -19,7 +20,8 @@ import {
 import type { ButtonSize, ButtonVariant } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "Design system · PlatformOpsStudio",
+  // Just the leaf title — the root layout's template appends " · PlatformOpsStudio".
+  title: "Design system",
   description:
     "Design tokens, primitives, and every variant/state. QA surface for the site rebuild.",
   robots: { index: false, follow: false },
@@ -377,6 +379,97 @@ export default function DesignSystemPage() {
             <Icon name="Menu" />
             <VisuallyHidden>Open navigation</VisuallyHidden>
           </Button>
+        </div>
+      </Section>
+
+      <Divider className="mx-auto max-w-[var(--container-max)]" />
+
+      {/* IMAGES */}
+      <Section spacing="md" ariaLabelledby="images-heading">
+        <Heading as="h2" level="h2" id="images-heading" className="mb-6">
+          Images
+        </Heading>
+        <Text variant="muted" className="mb-6 max-w-2xl">
+          Thin <code className="font-mono">next/image</code> wrapper.{" "}
+          <code className="font-mono">alt</code> is required by TypeScript;{" "}
+          <code className="font-mono">aspect</code> and <code className="font-mono">radius</code>{" "}
+          props map to token utilities.
+        </Text>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card padding="sm">
+            <Text variant="small" className="text-muted mb-3 font-mono tracking-wider uppercase">
+              fill · 16:9 · radius-lg (SVG banner)
+            </Text>
+            <Image
+              src="/assets/img/banners/banner-newsletter-policy-as-code.svg"
+              alt="Newsletter banner: Policy as Code"
+              fill
+              aspect="16/9"
+              radius="lg"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </Card>
+
+          <Card padding="sm">
+            <Text variant="small" className="text-muted mb-3 font-mono tracking-wider uppercase">
+              fill · 3:2 · radius-lg (JPEG hero)
+            </Text>
+            <Image
+              src="/assets/img/hero.jpg"
+              alt="Legacy site hero — Platform Ops Studio typography over a circuit-board photo"
+              fill
+              aspect="3/2"
+              radius="lg"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </Card>
+
+          <Card padding="sm">
+            <Text variant="small" className="text-muted mb-3 font-mono tracking-wider uppercase">
+              fixed · natural size (PNG logo)
+            </Text>
+            <div className="bg-surface-2 flex items-center justify-center rounded-md p-6">
+              <Image
+                src="/assets/img/logo.png"
+                alt="Platform Ops Studio logo"
+                width={170}
+                height={100}
+              />
+            </div>
+          </Card>
+
+          <Card padding="sm">
+            <Text variant="small" className="text-muted mb-3 font-mono tracking-wider uppercase">
+              favicon set — 32 / 180 / 192 / 512
+            </Text>
+            <div className="flex flex-wrap items-end gap-4">
+              <div className="flex flex-col items-center gap-2">
+                <Image src="/icon.png" alt="Favicon 32" width={32} height={32} />
+                <Text variant="small" className="text-muted">
+                  32
+                </Text>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Image src="/apple-icon.png" alt="Apple touch icon" width={64} height={64} />
+                <Text variant="small" className="text-muted">
+                  180
+                </Text>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Image src="/icon-192.png" alt="Android icon 192" width={64} height={64} />
+                <Text variant="small" className="text-muted">
+                  192
+                </Text>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Image src="/icon-512.png" alt="Android icon 512" width={80} height={80} />
+                <Text variant="small" className="text-muted">
+                  512
+                </Text>
+              </div>
+            </div>
+          </Card>
         </div>
       </Section>
 

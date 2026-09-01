@@ -9,6 +9,8 @@ export { FieldError } from "./FieldError";
 export { Heading } from "./Heading";
 export { Icon } from "./Icon";
 export type { IconProps } from "./Icon";
+export { Image } from "./Image";
+export type { ImageProps } from "./Image";
 export { Input } from "./Input";
 export { Label } from "./Label";
 export { Link } from "./Link";

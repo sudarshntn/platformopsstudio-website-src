@@ -352,29 +352,33 @@ hops.
 
 ## 10. Image inventory
 
-All raster and SVG assets currently under `assets/img/`. Migrate to `public/assets/img/` in
-stage 2. Dimensions confirmed from local sources.
+**Stage 2 update**: all 18 assets are now mirrored under `public/assets/img/` with identical
+filenames. The legacy `assets/img/` at the repo root is retained untouched so `main` can
+continue to auto-deploy the static site until stage-14 cutover. See `docs/assets.md` for the
+full migration and favicon strategy.
 
 ### 10.1 Raster
 
-| File                     | Size      | Dimensions                   | Where                                               |
-| ------------------------ | --------- | ---------------------------- | --------------------------------------------------- |
-| `assets/img/logo.png`    | 15,569 B  | 1019×598 (PNG-8, palette)    | Every header brand + footer brand                   |
-| `assets/img/hero.jpg`    | 124,115 B | 1536×1024 (progressive JPEG) | Home hero, blogs/contact/legal/privacy small heroes |
-| `assets/img/favicon.png` | 95,277 B  | 1250×1250 (PNG RGBA)         | `<link rel="icon">` on every page                   |
+| File                            | Size      | Dimensions                   | Where                                                  |
+| ------------------------------- | --------- | ---------------------------- | ------------------------------------------------------ |
+| `public/assets/img/logo.png`    | 15,569 B  | 1019×598 (PNG-8, palette)    | Every header brand + footer brand                      |
+| `public/assets/img/hero.jpg`    | 124,115 B | 1536×1024 (progressive JPEG) | Home hero, blogs/contact/legal/privacy small heroes    |
+| `public/assets/img/favicon.png` | 95,277 B  | 1250×1250 (PNG RGBA)         | Source for the favicon set below (not directly served) |
+| `app/icon.png`                  | 3,360 B   | 32×32                        | Browser tab favicon (Next 15 auto-linked)              |
+| `app/apple-icon.png`            | 22,265 B  | 180×180                      | iOS home-screen icon (Next 15 auto-linked)             |
+| `public/icon-192.png`           | 23,931 B  | 192×192                      | Android/PWA (referenced by manifest in stage 4)        |
+| `public/icon-512.png`           | 73,704 B  | 512×512                      | Android/PWA (referenced by manifest in stage 4)        |
 
 **Rebuild notes**:
 
-- `favicon.png` is huge at 1250². Generate proper favicon set (`favicon.ico`, `apple-touch-icon`,
-  Android chrome sizes) with `next/head` metadata in stage 3.
 - `logo.png` is palette-indexed — fine at current display size but limits color fidelity.
-  If a rebranded logo lands in stage 3, prefer SVG.
+  If a rebranded logo lands, prefer SVG.
 - `hero.jpg` is 124 KB progressive JPEG — acceptable for `next/image` with `priority` on
   home only.
 
 ### 10.2 SVG banners (all 1200×630, ~2.2 KB each)
 
-Under `assets/img/banners/`:
+Under `public/assets/img/banners/`:
 
 **Blog banners** (10):
 

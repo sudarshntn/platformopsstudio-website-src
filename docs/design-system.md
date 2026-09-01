@@ -319,6 +319,23 @@ Under the hood: `import * as icons from "lucide-react"` and looks up by `name`. 
 across the app; slightly larger bundle than tree-shaken direct imports — acceptable at this
 scale (stage 13 will re-evaluate).
 
+### Image — `<Image>` (added in stage 2)
+
+Thin wrapper around `next/image` with token-aware `aspect` and `radius` props. `alt` is
+enforced by TypeScript. See `docs/assets.md` §4 for the full API and mode selection guide
+(`fill` vs fixed).
+
+```tsx
+<Image
+  src="/assets/img/banners/banner-mcp-orchestrator.svg"
+  alt="MCP Orchestrator banner"
+  fill
+  aspect="16/9"
+  radius="lg"
+  sizes="(max-width: 768px) 100vw, 33vw"
+/>
+```
+
 ---
 
 ## 4. Usage in a page
