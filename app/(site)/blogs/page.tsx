@@ -9,6 +9,10 @@ export const metadata: Metadata = {
     "Practical writing on Platform Engineering and DevSecOps — 14 posts, several cross-posted from Medium.",
 };
 
+// ISR — rebuild the list at most once an hour so a new MDX file picked
+// up between deploys still surfaces without a full site rebuild.
+export const revalidate = 3600;
+
 export default function BlogsPage() {
   const posts = getAllBlogs();
 

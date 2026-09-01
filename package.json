@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "analyze": "ANALYZE=1 next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
+    "@next/bundle-analyzer": "^16.3.4",
     "@playwright/test": "1.55.1",
     "@tailwindcss/postcss": "4.1.14",
     "@types/node": "22.10.5",

@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+
+// ISR — same rationale as /blogs; a new edition MDX added between
+// deploys surfaces on the next revalidation instead of waiting for
+// a rebuild.
+export const revalidate = 3600;
 import Link from "next/link";
 import { Badge, Container, Heading, Image, Section, Text } from "@/components/ui";
 import { getAllNewsletters } from "@/lib/content/load";
