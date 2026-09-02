@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "PlatformOpsStudio.com — Next.js 15 App Router rebuild (in progress on the `next-rebuild` branch). Live static site continues to ship from `main`.",
-  "packageManager": "pnpm@11.24.0",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
