@@ -1,4 +1,3 @@
-import type { NextConfig } from "next";
 import bundleAnalyzer from "@next/bundle-analyzer";
 
 /**
@@ -6,6 +5,13 @@ import bundleAnalyzer from "@next/bundle-analyzer";
  *
  * Deployment target: Hostinger Node.js web app hosting (full Next.js
  * runtime — Route Handlers, Server Actions, ISR all supported).
+ *
+ * Kept as .mjs (not .ts) so Next never needs to compile TypeScript
+ * just to load its own config. On hosts that install with plain npm
+ * and don't have pnpm on PATH, a .ts config triggers Next's auto-
+ * install path which spawns whichever package manager owns the
+ * lockfile — pnpm here — and errors with ENOENT. .mjs bypasses all
+ * of that.
  *
  * Legacy static site (index.html, blogs.html, resources/, newsletter/,
  * assets/) still lives at the repo root on this branch so main can
@@ -23,7 +29,8 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "1",
 });
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
