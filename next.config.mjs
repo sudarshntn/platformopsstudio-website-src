@@ -13,13 +13,10 @@ import bundleAnalyzer from "@next/bundle-analyzer";
  * lockfile — pnpm here — and errors with ENOENT. .mjs bypasses all
  * of that.
  *
- * Legacy static site (index.html, blogs.html, resources/, newsletter/,
- * assets/) still lives at the repo root on this branch so main can
- * keep auto-deploying. Next.js's App Router ignores those root-level
- * *.html files. At cutover in stage 14 they're deleted.
- *
- * Redirects: preserve every legacy /*.html URL so search-engine and
- * external backlinks land on the new clean routes.
+ * Redirects: the legacy UENI-era static site used *.html filenames.
+ * We keep every one of those URLs pointing at the new clean routes
+ * (permanent 301) so search-engine and external backlinks still
+ * land somewhere useful.
  *
  * Bundle analyzer opts in via ANALYZE=1 pnpm build — writes
  * .next/analyze/*.html which we spot-check after any bundle-heavy
