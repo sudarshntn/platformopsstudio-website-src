@@ -1,0 +1,63 @@
+---
+title: "Chaos Engineering Grew Up: From Netflix to Mainstream"
+edition: 14
+date: 2026-08-31
+excerpt: "DORA and NIS2 turned resilience testing from a Netflix engineering-culture story into a regulator's checkbox. The discipline had to grow up fast — the maturity ladder, the tool landscape, and why the game day matters more than the failure injection."
+tags: [ChaosEngineering, SRE, Resilience, DORA, Reliability, GameDay, PlatformEngineering]
+slug: edition-14-chaos-engineering-grew-up
+linkedInUrl: https://www.linkedin.com/pulse/chaos-engineering-grew-up-from-netflix-mainstream-sudarshan-narayanan-ph92c
+---
+
+For a decade, chaos engineering was a story about Netflix's culture. In 2026 it's a compliance line-item. The EU's Digital Operational Resilience Act and NIS2 both require documented, repeatable resilience testing — and the auditors are asking. The discipline had to grow up fast, and most teams are still catching up to what "grown up" actually means.
+
+## What the discipline actually means now
+
+The mature definition hasn't changed: **experimenting on a system to build confidence in its ability to withstand turbulent conditions in production.** What's changed is who's watching. Installing LitmusChaos or Chaos Mesh is not the same as practicing chaos engineering — running structured experiments with a stated hypothesis and a predicted outcome is. Auditors can tell the difference; so can incident data.
+
+## The maturity ladder
+
+Teams move through four levels; skipping steps is where blast radius incidents happen.
+
+- **Level 1 — Dev / sandbox.** Prove the tooling, teach the muscle. Zero blast radius. Zero learning about production.
+- **Level 2 — Staging that looks like prod.** Same topology, real dependencies, synthetic traffic. Reveals config drift and dependency assumptions.
+- **Level 3 — Production, off-hours, contained.** Small blast radius, human on the button, quick abort. Where real resilience is actually measured.
+- **Level 4 — Production, real traffic, feature-flagged.** Continuous experiments during business hours, containment via flags and traffic-shaping. The Netflix state.
+
+Most teams should be at level 2 or 3. Very few need level 4 today.
+
+## Game days are a leadership tool, not a technical one
+
+The technical outcome of a game day — did the runbook work, did the alert fire — is the least valuable thing about it. The real value is organizational: knowledge trapped in senior engineers gets surfaced, junior staff get to practice in a safe context, documentation gaps become visible in real time, cross-team trust builds, and the org develops a shared vocabulary for reliability decisions.
+
+Invite the product manager. Invite the junior engineer. Invite the on-call from the neighboring team. Skip the theatre — no dramatic failure narration, no dashboards you don't normally use, no scripts. Run it the way an incident would run.
+
+## Tools that matured
+
+The tool debate is mostly over. Pick what fits your control plane:
+
+- **LitmusChaos** and **Chaos Mesh** — CNCF-graduated, Kubernetes-native, open source.
+- **Gremlin** — commercial SaaS, biggest experiment catalogue, best UX for teams that want to move fast without building.
+- **AWS Fault Injection Service** — first-party, tight IAM story, ideal if your control plane is AWS.
+- **Steadybit** — enterprise pick when compliance reporting and RBAC matter more than experiment breadth.
+
+The tool doesn't distinguish mature programs from immature ones. Cadence, hypothesis discipline, and blame-free retros do.
+
+## What regulators actually want
+
+DORA and NIS2 don't ask "do you have chaos engineering." They ask for evidence of:
+
+- Documented resilience testing on a defined cadence.
+- Realistic threat scenarios (not just "kill a pod").
+- Captured learning — the postmortem, the follow-up work, the fix landed.
+- Executive visibility.
+- Coordination with incident response — the team that runs the experiments is the same team that responds to real ones.
+
+DORA specifically mandates three-year threat-led penetration testing cycles for EU financial services. If your organization sells software to that market, this is on your roadmap whether you know it or not.
+
+## What to do this quarter
+
+- Run one tabletop with the on-call rotation. No injection, just talk through a scenario end to end. It surfaces more gaps than any single experiment.
+- Expand the game-day invite list — one PM, one junior engineer, one adjacent team.
+- Advance one experiment from staging to production, off-hours, with a feature-flag off switch. Document the hypothesis, the blast radius, and the abort criteria before you start.
+
+The tool doesn't matter. The regulation is coming for everyone. The discipline is grown up — the question is whether your program is.

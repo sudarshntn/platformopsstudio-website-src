@@ -1,0 +1,56 @@
+---
+title: "RAG-Powered Runbooks: When Your Documentation Wakes Up"
+edition: 13
+date: 2026-08-24
+excerpt: "Off-the-shelf LLMs fail in ops because they've never seen your architecture, your postmortems, or your alert history. RAG closes that gap — grounding every answer in your own writing — and turns the runbook from a stale wiki into an on-call teammate."
+tags: [AIOps, RAG, IncidentResponse, SRE, LLM, PlatformEngineering]
+slug: edition-13-rag-powered-runbooks
+linkedInUrl: https://www.linkedin.com/pulse/rag-powered-runbooks-when-your-documentation-wakes-up-narayanan-an67c
+---
+
+Ask a stock LLM about a page-load spike on your `checkout-api` and you'll get a confident, plausible, and entirely generic answer. That's the failure mode. Public training data has never seen your architecture diagram, your last three incidents, or the reason the payments team disabled retries on Tuesday. Retrieval-Augmented Generation is how you fix that — every answer conditioned on **your** writing, not the internet's.
+
+## Why generic LLMs fail in ops
+
+A model that has read the whole open web still can't tell you which service owns the queue that's backing up. Ops questions are hyper-local: they depend on names, dashboards, and history unique to one organization. Without grounding, the model either fabricates ("try restarting the pod") or gives textbook advice that doesn't map to your stack. Either way, it burns responder trust the moment they check.
+
+RAG solves the local-context problem by making every response conditional on documents you retrieve at query time. The model still writes fluent English; the substance comes from your postmortems, your runbooks, and your architecture docs.
+
+## What to index — in priority order
+
+Not everything you have is worth indexing. Bad context is worse than no context, because it looks like an answer.
+
+1. **Postmortems.** Highest-signal source in most orgs. They already encode "what went wrong and what we did about it" in narrative form — exactly what a language model can reuse.
+2. **Runbooks.** Often stale. Index them anyway, and use the retrieval feedback to identify which ones are lying.
+3. **Architecture documentation.** Service diagrams, dependency maps, data-flow docs.
+4. **Alert metadata + runbook links.** The alert itself is a great retrieval anchor — every page has a name, a service, and a symptom.
+5. **Approved incident Slack channels.** Timestamped decisions live here. Filter aggressively for the channels where real work happens.
+6. **Well-organized source code.** README-adjacent code helps the model reason about behavior. Random utility modules do not.
+
+Skip: unowned wiki spaces, personal notebooks, decks older than a year, anything nobody has touched since the last reorg.
+
+## Chunking, embeddings, and hybrid retrieval
+
+- **Semantic chunking** for prose. Break at paragraphs and headings, not fixed token counts.
+- **Structural chunking** for code and YAML. Preserve function and block boundaries.
+- **Metadata on every chunk** — source, last-updated date, owning team, service name. Retrieval that ignores freshness will pull a two-year-old runbook past a two-day-old postmortem every time.
+- **Hybrid retrieval.** Pure semantic search misses exact identifiers (`SVC-4471`, `db-primary-2`) that BM25 nails. Combine the two and re-rank.
+
+## Quality controls that keep it trustworthy
+
+Confidence threshold on retrieval scores — below the floor, the assistant should say "I don't know" instead of guessing. Citations attached to every answer so the responder can verify the source in one click. Human-in-the-loop on any destructive action; the AI proposes, the human runs. A golden-question set that runs on every model or index update, comparing new answers against known-good responses.
+
+## The feedback loop
+
+- Thumbs-up / thumbs-down on every response.
+- Annotate failures — the responder tags what should have been retrieved instead.
+- Weekly review of low-scored responses; missing docs get created, wrong docs get archived.
+- Automatic re-index when a source doc is edited.
+
+The feedback loop is what separates a novelty demo from a system that gets better every week.
+
+## Where to start this quarter
+
+Pick one narrow slice and prove it: index only postmortems, and expose the assistant only to the on-call channel. Audit retrieval quality against your last month of real alerts. Add citations from day one. In a few weeks you'll know whether it's carrying its weight — and you'll have the feedback signal to expand safely from there.
+
+The point isn't a smarter chatbot. It's documentation that finally answers the question the responder was actually going to ask.
