@@ -25,7 +25,7 @@ export const aboutCopy = {
   eyebrow: "About",
   heading: "Dynamic Engineering Hub in Texas",
   body: "PlatformOpsStudio is my passion project, a digital haven where I share the art and science of Platform Engineering and DevSecOps through engaging blogs, videos, and tutorials. My aim is to spark curiosity and consistently engage a global audience of practitioners.",
-  emailLink: { label: "email me", href: "mailto:ramsudarsan@gmail.com" },
+  emailLink: { label: "email me", href: "mailto:platformopsstudio@gmail.com" },
 } as const;
 
 export const approachCopy = {

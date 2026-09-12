@@ -14,7 +14,7 @@ Target platform: Hostinger Web Hosting **Node.js** plan (not the static plan). T
    - `NODE_ENV=production`
    - `NEXT_PUBLIC_SITE_URL=https://platformopsstudio.com`
    - `RESEND_API_KEY=<paste from Resend dashboard>`
-   - `CONTACT_TO_EMAIL=ramsudarsan@gmail.com`
+   - `CONTACT_TO_EMAIL=platformopsstudio@gmail.com`
 3. **hPanel → SSL** — turn on Force HTTPS. Hostinger's Let's Encrypt cert renews automatically.
 
 ## Build artifact
@@ -92,7 +92,7 @@ touch nextapp/.restart
 
 ## Monitoring
 
-- **Uptime.** UptimeRobot free tier — HTTPS check on `https://platformopsstudio.com/robots.txt` every 5 minutes. Alert channels: email to `ramsudarsan@gmail.com` and a webhook to Slack if configured.
+- **Uptime.** UptimeRobot free tier — HTTPS check on `https://platformopsstudio.com/robots.txt` every 5 minutes. Alert channels: email to `platformopsstudio@gmail.com` and a webhook to Slack if configured.
 - **Errors.** Next.js writes to stdout/stderr; Hostinger surfaces those in hPanel → Node.js → Logs.
 - **RUM.** Not yet wired. If enabled later, gate the loader on `getConsent() === "accepted"` (see [consent.md](./consent.md)) — the consent record is already kept.
 
@@ -108,7 +108,7 @@ Copy this into the release PR body.
 - [ ] Deploy workflow ran and application restarted
 - [ ] `curl -sI https://platformopsstudio.com/` returns 200
 - [ ] Every legacy `.html` redirect returns 301 (loop above)
-- [ ] Contact form roundtrip: submit → email arrives at `ramsudarsan@gmail.com`
+- [ ] Contact form roundtrip: submit → email arrives at `platformopsstudio@gmail.com`
 - [ ] Lighthouse ≥ 95 across Perf/A11y/Best Practices/SEO
 - [ ] Uptime monitor active
 - [ ] DNS TTL raised back to 3600

@@ -82,8 +82,7 @@ export const contactPage = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
-    email: "ramsudarsan@gmail.com",
-    telephone: "+1-737-202-8818",
+    email: "platformopsstudio@gmail.com",
     areaServed: "US",
     availableLanguage: "English",
   },

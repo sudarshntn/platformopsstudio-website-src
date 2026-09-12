@@ -144,7 +144,7 @@ export function ContactForm() {
           Message sent — thanks for reaching out.
         </Heading>
         <Text variant="muted" className="mt-3">
-          I&apos;ll reply from ramsudarsan@gmail.com, usually within a couple of days.
+          I&apos;ll reply from platformopsstudio@gmail.com, usually within a couple of days.
         </Text>
         <Button variant="ghost" className="mt-6" onClick={() => setStatus({ kind: "idle" })}>
           Send another message

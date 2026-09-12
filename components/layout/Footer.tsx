@@ -104,8 +104,8 @@ export function Footer() {
             <span>© 2026 Platform Ops Studio. All rights reserved.</span>
             <span>
               Texas, United States ·{" "}
-              <a href="mailto:ramsudarsan@gmail.com" className="text-text hover:text-primary">
-                ramsudarsan@gmail.com
+              <a href="mailto:platformopsstudio@gmail.com" className="text-text hover:text-primary">
+                platformopsstudio@gmail.com
               </a>
             </span>
           </div>

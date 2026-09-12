@@ -30,16 +30,11 @@ export default function ContactPage() {
                 <div>
                   <dt className="font-mono text-xs tracking-widest uppercase">Email</dt>
                   <dd className="text-text mt-1">
-                    <a href="mailto:ramsudarsan@gmail.com" className="text-primary hover:underline">
-                      ramsudarsan@gmail.com
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-mono text-xs tracking-widest uppercase">Phone</dt>
-                  <dd className="text-text mt-1">
-                    <a href="tel:+17372028818" className="text-primary hover:underline">
-                      +1 737 202 8818
+                    <a
+                      href="mailto:platformopsstudio@gmail.com"
+                      className="text-primary hover:underline"
+                    >
+                      platformopsstudio@gmail.com
                     </a>
                   </dd>
                 </div>

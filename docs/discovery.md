@@ -77,7 +77,7 @@ Three horizontal rows inside `.container`, dark background (`--color-bg-dark`):
    All `target="_blank" rel="noopener"` with correct `aria-label` per platform.
 
 3. **Bottom row** — copyright + secondary text (`© 2026 Platform Ops Studio. All rights
-reserved.` and `Texas, United States · ramsudarsan@gmail.com`).
+reserved.` and `Texas, United States · platformopsstudio@gmail.com`).
 
 ### Cookie banner (all pages)
 
@@ -105,7 +105,7 @@ Sections top-to-bottom:
    - Primary button: `✉ Send Message` → `/contact`
 2. **About / Approach split** — `.section-alt` background (`#fff`), two-column grid.
    - Left column: eyebrow "ABOUT", H2 "Dynamic Engineering Hub in Texas", one-paragraph
-     description ending with an inline `mailto:ramsudarsan@gmail.com` link.
+     description ending with an inline `mailto:platformopsstudio@gmail.com` link.
    - Right column: eyebrow "APPROACH", H2 "Authentic Learning and Connection", one-paragraph
      description, outline button "See the Details" → `/contact`.
 3. **Latest Newsletter** — `.section-dark`, showcases the 2 most recent Platform Pulse
@@ -189,7 +189,7 @@ Two flavors depending on whether the post cross-posts from Medium:
     phone), consent note, primary "Send Message" button, `.form-status` element for
     post-submit messaging.
 
-Current form behavior (see `assets/js/main.js`): on submit, opens `mailto:ramsudarsan@gmail.com`
+Current form behavior (see `assets/js/main.js`): on submit, opens `mailto:platformopsstudio@gmail.com`
 with the fields concatenated into the body. **Stage 6 target**: swap for a Route Handler that
 uses Resend (`RESEND_API_KEY`, `CONTACT_TO_EMAIL` env vars — see `.env.example`) and returns a
 proper success/error state, keeping the mailto fallback if the API is misconfigured.
@@ -198,13 +198,12 @@ proper success/error state, keeping the mailto fallback if the API is misconfigu
 
 Narrow container (max 780px). H1 "Legal Notice", then a definition list:
 
-| Term                    | Value                 |
-| ----------------------- | --------------------- |
-| Business Name           | Platform Ops Studio   |
-| Registered Company Name | Platform Ops Studio   |
-| Address                 | Texas, United States  |
-| Phone Number            | +1 737 202 8818       |
-| Email                   | ramsudarsan@gmail.com |
+| Term                    | Value                       |
+| ----------------------- | --------------------------- |
+| Business Name           | Platform Ops Studio         |
+| Registered Company Name | Platform Ops Studio         |
+| Address                 | Texas, United States        |
+| Email                   | platformopsstudio@gmail.com |
 
 ### 3.8 `/privacy-policy`
 
@@ -343,8 +342,7 @@ hops.
 
 | Channel            | Value                                      | Used at                                                                                   |
 | ------------------ | ------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Email              | `ramsudarsan@gmail.com`                    | `mailto:` links on Home, Contact, Blogs, Newsletter, Legal Notice, Privacy Policy, footer |
-| Phone              | `+1 737 202 8818` (`tel:+17372028818`)     | Contact, Legal Notice                                                                     |
+| Email              | `platformopsstudio@gmail.com`              | `mailto:` links on Home, Contact, Blogs, Newsletter, Legal Notice, Privacy Policy, footer |
 | Location           | Texas, United States                       | Every header (location strip), footer, Legal Notice, Contact                              |
 | LinkedIn subscribe | The Platform Pulse newsletter URL (see §6) | Newsletter landing, all issue pages, homepage tie-in                                      |
 

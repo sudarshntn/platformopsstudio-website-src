@@ -81,7 +81,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO_EMAIL ?? "ramsudarsan@gmail.com";
+  const to = process.env.CONTACT_TO_EMAIL ?? "platformopsstudio@gmail.com";
 
   if (!apiKey) {
     // Dev fallback — log the payload and pretend success so local
