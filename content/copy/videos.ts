@@ -1,24 +1,37 @@
 /**
- * Videos section copy and the planned-episode lineup.
+ * Videos section copy and the launch lineup.
  *
- * The YouTube channel (UCgCGE1H5KU9AiL8Pcoc6aMg) has no published
- * videos yet, so every block here renders in a "coming soon" state.
- * When episodes go live, add `youtubeId` to the entry — the card
- * already branches on it, so a real thumbnail and watch link light up
- * without touching the page component.
+ * Source: the PlatformOps_Studio_Content_Catalog workbook (Drive), which
+ * holds a 24-video catalog plus a "Channel Launch Plan" tab. The five
+ * entries below are the first five in that tab's *recommended launch
+ * order*, which deliberately differs from catalog row order — e.g. the
+ * ArgoCD video is catalog #3 but ships second because of search volume.
+ * Episode numbers here are launch position, not catalog row.
+ *
+ * Each `teaser` is the catalog's "The Hook (first 15s promise)" column
+ * verbatim — it is already written as a promise to the viewer, so it
+ * reads correctly as teaser copy without a rewrite.
+ *
+ * Nothing is published yet (the channel's RSS feed returns zero
+ * entries), so every card renders in its coming-soon state. When an
+ * episode goes live, set `youtubeId` — the card already branches on it.
  */
 
 export const videosCopy = {
   eyebrow: "Videos",
   heading: "Platform Engineering, On Screen",
+  tagline: "Platforms developers love — and security teams trust.",
   intro:
-    "Hands-on walkthroughs of the same ground the blog and newsletter cover — built live, in a real cluster, with the mistakes left in. The channel is spinning up now; the lineup below is what lands first.",
-  statusBadge: "Releasing soon",
+    "Build secure, developer-friendly internal platforms — every episode ships a forkable, production-grade blueprint with security baked in from day one. The channel launches shortly; these are the first five episodes.",
+  statusBadge: "Coming soon",
   banner: {
     src: "/assets/img/banners/banner-videos-coming-soon.svg",
     alt: "PlatformOpsStudio videos — releasing soon.",
   },
   channelUrl: "https://www.youtube.com/@PlatformOpsStudio",
+  lineupHeading: "First five episodes",
+  lineupIntro:
+    "Every build episode ships with a repo you can fork and a diagram before a single line of YAML.",
   subscribe: {
     heading: "Get the first episode when it drops",
     body: "Subscribe on YouTube and the opening walkthrough shows up in your feed. No upload schedule noise — just the episodes.",
@@ -26,7 +39,7 @@ export const videosCopy = {
   },
   meanwhile: {
     heading: "In the meantime",
-    body: "The written versions of most of these topics are already published.",
+    body: "Several of these topics are already written up in long form.",
     links: [
       { label: "Read the blog", href: "/blogs" },
       { label: "Browse The Platform Pulse", href: "/newsletter" },
@@ -36,88 +49,95 @@ export const videosCopy = {
 
 export type PlannedVideo = {
   readonly slug: string;
+  /** Launch position, per the catalog's Channel Launch Plan tab. */
+  readonly episode: number;
   readonly title: string;
-  readonly description: string;
-  readonly tags: readonly string[];
-  /** Rough runtime so the lineup sets expectations before anything ships. */
+  /** The catalog's "first 15s promise" — used verbatim as teaser copy. */
+  readonly teaser: string;
+  /** Content pillar label (P1-P5 in the catalog). */
+  readonly pillar: string;
+  readonly format: "Build" | "Explainer" | "Comparison";
+  readonly level: "Beginner" | "Intermediate" | "Senior";
   readonly runtime: string;
+  /** Core stack from the catalog, used as card tags. */
+  readonly tags: readonly string[];
   /** Set once the episode is live — flips the card out of its placeholder state. */
   readonly youtubeId?: string;
-  /** Companion long-form piece already on the site, when one exists. */
+  /** Only set where a genuinely matching long-form piece already exists. */
   readonly companion?: { readonly label: string; readonly href: string };
 };
 
 export const plannedVideos: readonly PlannedVideo[] = [
   {
-    slug: "private-llm-platform-aks-vllm",
-    title: "Building a Private LLM Platform on Azure AKS",
-    description:
-      "The full build: a tainted GPU node pool, the NVIDIA device plugin, Key Vault secrets, cached model weights, and vLLM serving an OpenAI-compatible endpoint that never leaves your VNet.",
-    tags: ["LLMOps", "AKS", "vLLM"],
-    runtime: "~35 min",
-    companion: {
-      label: "Read the walkthrough",
-      href: "/blogs/private-llm-platform-on-azure-aks-with-vllm",
-    },
+    slug: "what-is-an-internal-developer-platform",
+    episode: 1,
+    title: "What is an Internal Developer Platform? (And why 2026 needs one)",
+    teaser:
+      "In 8 minutes you'll understand exactly what an IDP is, the 5 layers it needs, and see one running.",
+    pillar: "Build the Platform",
+    format: "Explainer",
+    level: "Beginner",
+    runtime: "8–10 min",
+    tags: ["Backstage", "ArgoCD", "Crossplane"],
   },
   {
-    slug: "argo-cd-deployment-patterns",
-    title: "Argo CD Deployment Patterns That Survive Scale",
-    description:
-      "App-of-apps, ApplicationSets, and the repo structures that stop working past fifty clusters — demonstrated against a real multi-cluster setup rather than a single kind node.",
-    tags: ["GitOps", "ArgoCD", "Kubernetes"],
-    runtime: "~28 min",
+    slug: "argocd-gitops-zero-to-auto-sync",
+    episode: 2,
+    title: "GitOps in one video: ArgoCD from zero to auto-sync",
+    teaser:
+      "You'll deploy an app, push a git change, and watch ArgoCD sync it live — plus how rollbacks work.",
+    pillar: "Build the Platform",
+    format: "Build",
+    level: "Intermediate",
+    runtime: "16–22 min",
+    tags: ["ArgoCD", "Kubernetes", "Helm", "Git"],
     companion: {
       label: "Read the walkthrough",
       href: "/blogs/mastering-gitops-argocd-deployment-patterns",
     },
   },
   {
-    slug: "policy-as-code-kyverno-opa",
-    title: "Policy as Code: Kyverno vs OPA, Hands On",
-    description:
-      "Writing the same three admission policies twice — once in Kyverno, once in Rego — then comparing what each is actually good at instead of arguing about it on a slide.",
-    tags: ["PolicyAsCode", "Kyverno", "OPA"],
-    runtime: "~25 min",
+    slug: "build-a-developer-portal-with-backstage",
+    episode: 3,
+    title: "Build a Developer Portal with Backstage from scratch",
+    teaser:
+      "By the end you'll have a working Backstage portal with a service catalog and a golden-path template — repo included.",
+    pillar: "Build the Platform",
+    format: "Build",
+    level: "Intermediate",
+    runtime: "18–25 min",
+    tags: ["Backstage", "Node", "Docker", "GitHub"],
+    companion: {
+      label: "Read the edition",
+      href: "/newsletter/edition-11-golden-paths-developers-actually-use",
+    },
+  },
+  {
+    slug: "policy-as-code-with-kyverno",
+    episode: 4,
+    title: "Policy as Code with Kyverno: guardrails without saying no",
+    teaser:
+      "You'll block insecure deployments automatically and give devs instant, friendly feedback.",
+    pillar: "Secure the Platform",
+    format: "Build",
+    level: "Intermediate",
+    runtime: "16–22 min",
+    tags: ["Kyverno", "Kubernetes", "OPA"],
     companion: {
       label: "Read the edition",
       href: "/newsletter/edition-12-policy-as-code-opa-kyverno-cedar",
     },
   },
   {
-    slug: "istio-ambient-mesh",
-    title: "Istio Ambient Mesh Without the Sidecar Tax",
-    description:
-      "Standing up ambient mode from scratch, watching ztunnel handle mTLS, and measuring what the sidecar removal actually buys you in a workload that isn't a demo app.",
-    tags: ["ServiceMesh", "Istio", "Kubernetes"],
-    runtime: "~30 min",
-    companion: {
-      label: "Read the walkthrough",
-      href: "/blogs/seamless-api-management-istio-ambient-with-azure-apim",
-    },
+    slug: "github-actions-to-production",
+    episode: 5,
+    title: "GitHub Actions to production: the pipeline I actually use",
+    teaser:
+      "You'll build a full test-build-scan-sign-deploy pipeline and I'll defend every stage choice.",
+    pillar: "Ship It",
+    format: "Build",
+    level: "Intermediate",
+    runtime: "20–26 min",
+    tags: ["GitHubActions", "Docker", "ArgoCD"],
   },
-  {
-    slug: "zero-trust-spiffe-spire",
-    title: "Workload Identity with SPIFFE and SPIRE",
-    description:
-      "Replacing static Kubernetes secrets with attested, auto-rotating workload identity — the piece that makes zero trust real instead of a vendor slide.",
-    tags: ["ZeroTrust", "SPIFFE", "DevSecOps"],
-    runtime: "~32 min",
-    companion: {
-      label: "Read the edition",
-      href: "/newsletter/edition-17-zero-trust-for-platform-teams",
-    },
-  },
-  {
-    slug: "golden-paths-backstage",
-    title: "Golden Paths Developers Actually Use",
-    description:
-      "Building a scaffolder template end to end in Backstage, then the harder half: instrumenting adoption so you can tell whether anyone is really using it.",
-    tags: ["PlatformEngineering", "Backstage", "DevEx"],
-    runtime: "~27 min",
-    companion: {
-      label: "Read the edition",
-      href: "/newsletter/edition-11-golden-paths-developers-actually-use",
-    },
-  },
-] as const;
+];

@@ -41,7 +41,8 @@ export default function VideosPage() {
             </Heading>
             <Badge variant="primary">{videosCopy.statusBadge}</Badge>
           </div>
-          <Text variant="muted" className="mt-4">
+          <Text className="text-primary mt-4 font-semibold">{videosCopy.tagline}</Text>
+          <Text variant="muted" className="mt-2">
             {videosCopy.intro}
           </Text>
         </div>
@@ -60,11 +61,10 @@ export default function VideosPage() {
 
         {/* ── Planned lineup ───────────────────────────────────── */}
         <Heading as="h2" level="h3" className="mt-16">
-          First episodes
+          {videosCopy.lineupHeading}
         </Heading>
         <Text variant="muted" className="mt-3 max-w-2xl">
-          Each one pairs with something already written up here, so you don&apos;t have to wait for
-          the video to get the material.
+          {videosCopy.lineupIntro}
         </Text>
 
         <ul className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -80,27 +80,31 @@ export default function VideosPage() {
                 <span className="border-primary/40 bg-bg/60 text-primary flex h-14 w-14 items-center justify-center rounded-full border backdrop-blur-sm">
                   <Icon name="Play" size={24} />
                 </span>
+                <span className="text-muted absolute top-3 left-3 font-mono text-xs tracking-widest uppercase">
+                  Ep {video.episode.toString().padStart(2, "0")}
+                </span>
                 <span className="absolute top-3 right-3">
                   <Badge variant="accent">{videosCopy.statusBadge}</Badge>
                 </span>
               </div>
 
               <div className="flex flex-1 flex-col p-5">
-                <Text
-                  as="div"
-                  variant="small"
-                  className="text-muted mb-2 font-mono text-xs tracking-wider uppercase"
-                >
-                  {video.runtime}
-                </Text>
+                <div className="text-muted mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs tracking-wider uppercase">
+                  <span className="text-primary">{video.pillar}</span>
+                  <span aria-hidden>·</span>
+                  <span>{video.format}</span>
+                  <span aria-hidden>·</span>
+                  <span>{video.runtime}</span>
+                </div>
                 <Heading as="h3" level="h5" className="mb-2">
                   {video.title}
                 </Heading>
                 <Text variant="small" className="text-muted flex-1">
-                  {video.description}
+                  {video.teaser}
                 </Text>
 
                 <div className="mt-4 flex flex-wrap gap-1.5">
+                  <Badge variant="primary">{video.level}</Badge>
                   {video.tags.map((tag) => (
                     <Badge key={tag} variant="neutral">
                       {tag}
