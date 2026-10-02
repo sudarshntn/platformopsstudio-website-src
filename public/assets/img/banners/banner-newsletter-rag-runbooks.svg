@@ -19,16 +19,22 @@
   <rect x="0" y="0" width="1200" height="630" fill="none" stroke="#3a7dff" stroke-opacity="0.25" stroke-width="2"/>
 
   <rect x="64" y="42" width="384" height="40" rx="20" fill="#3a7dff" fill-opacity="0.15" stroke="#3a7dff" stroke-opacity="0.6" stroke-width="1.5"/>
-  <text x="82" y="68" font-size="16" font-weight="700" letter-spacing="1.5" fill="#3a7dff">THE PLATFORM PULSE · EDITION 08</text>
-  <text x="64" y="220" font-size="46" font-weight="700" fill="#ffffff"><tspan x="64" dy="0">LLMOps: What</tspan><tspan x="64" dy="56">Production-Grade Looks</tspan><tspan x="64" dy="56">Like in 2026</tspan></text>
+  <text x="82" y="68" font-size="16" font-weight="700" letter-spacing="1.5" fill="#3a7dff">THE PLATFORM PULSE · EDITION 13</text>
+  <text x="64" y="220" font-size="46" font-weight="700" fill="#ffffff"><tspan x="64" dy="0">RAG-Powered Runbooks:</tspan><tspan x="64" dy="56">When Your Documentation</tspan><tspan x="64" dy="56">Wakes Up</tspan></text>
 
-  <g transform="translate(960,310)" stroke="#3a7dff" fill="none" stroke-width="3" opacity="0.9">
+  <g transform="translate(960,340)" stroke="#3a7dff" fill="none" stroke-width="3" opacity="0.9">
     <circle r="170" stroke-opacity="0.25" stroke-width="1.5"/>
-    
-    <polygon points="0,-90 100,-45 0,0 -100,-45" />
-    <polygon points="0,-20 100,25 0,70 -100,25" />
-    <polygon points="0,50 100,95 0,140 -100,95" />
 
+    <rect x="-72" y="-112" width="140" height="196" rx="10"/>
+    <g stroke-width="2.5" stroke-opacity="0.75" stroke-linecap="round">
+      <line x1="-44" y1="-70" x2="40" y2="-70"/>
+      <line x1="-44" y1="-34" x2="40" y2="-34"/>
+      <line x1="-44" y1="2" x2="18" y2="2"/>
+      <line x1="-44" y1="38" x2="40" y2="38"/>
+    </g>
+    <circle cx="62" cy="68" r="46" fill="#0d1a3a" stroke-width="3.5"/>
+    <line x1="94" y1="100" x2="128" y2="134" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="62" cy="68" r="16" stroke-width="2.5" stroke-opacity="0.8"/>
   </g>
 
   <text x="64" y="580" font-size="20" font-weight="700" fill="#ffffff">The Platform Pulse</text>
