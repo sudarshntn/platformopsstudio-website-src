@@ -1,0 +1,78 @@
+---
+title: "AI-Assisted Coding: Beyond Copilot"
+edition: 18
+date: 2026-09-28
+excerpt: "GitHub's 2026 survey: 76% of developers use AI-assisted coding daily, up from 41% in 2024 — but 68% of platform teams have no policy on it. That gap is going to drive the next 18 months of security incidents and quiet code-quality rot."
+tags: [AIDevelopment, Copilot, Cursor, DeveloperProductivity, DevEx, AISecurity, PlatformEngineering]
+slug: edition-18-ai-assisted-coding-beyond-copilot
+linkedInUrl: https://www.linkedin.com/pulse/ai-assisted-coding-beyond-copilot-sudarshan-narayanan-qwfdc
+---
+
+Copilot was the training wheels. The 2026 developer workflow is deeply agentic, and platform teams have new problems to solve because of it.
+
+GitHub's 2026 Developer Survey shows 76% of developers use AI-assisted coding daily, up from 41% in 2024. But 68% of platform teams report they have **no policy** on it. That gap will drive the next 18 months of security incidents, code quality regressions, and dependency chaos.
+
+Prior editions covered AI operationally — the AI SRE, [LLMOps](/newsletter/edition-08-llmops-production-grade-2026), [RAG for runbooks](/newsletter/edition-13-rag-powered-runbooks). This edition is about AI in the developer workflow itself, and specifically what platform teams need to do about it.
+
+## The state of AI-assisted development
+
+Autocomplete was the 2022 story. Agents are the 2026 story. The category has fragmented into three tiers:
+
+- **Inline autocomplete** (Copilot original, TabNine). Still the largest install base. Predicts the next few lines. Fine for productivity, minimal architectural risk.
+- **Chat-based assistance** (Copilot Chat, Cody, Continue). Developers ask questions and paste code back and forth. Higher productivity, still human-driven.
+- **Agentic coding** (Cursor, Cline, Aider, Claude Code, Copilot Workspace). The AI drives multi-file changes across a codebase, makes commits, and iterates. This is where the 2026 productivity gains come from — and where platform team problems begin.
+
+The line that matters: autocomplete *augments* developers. Agentic coding *replaces* certain kinds of work entirely. Any developer using an agentic tool ships different code than they would without it — different structure, different dependency choices, sometimes a different security posture.
+
+## What enterprises are actually shipping
+
+- **Cursor** — the current dominant IDE for agentic coding. A VS Code fork with deep AI integration, multi-file editing, autonomous task execution.
+- **Cline** — the open-source agentic assistant with strong enterprise adoption. Runs in VS Code, works with any LLM.
+- **Aider** — the CLI-first option. Popular with senior engineers who want git-integrated AI editing without adopting a new IDE.
+- **Claude Code, Copilot Workspace** — vendor-native agentic environments, increasingly the default for enterprises with existing platform relationships.
+
+The 2026 shift: developers now spend meaningful time reviewing AI-written code they didn't write themselves. That review skill is different from writing skill. Most engineering onboarding hasn't caught up.
+
+## Code review when AI writes half the diff
+
+The 2026 code review problem: reviewers are drowning in AI-generated diffs that look right, but that the author hasn't fully understood.
+
+What mature teams have adopted:
+
+- **AI-authored PRs must be labeled.** Reviewers need to know when to apply extra scrutiny.
+- **Stricter test coverage requirements for AI-generated code.** If the AI wrote it and the author didn't fully understand it, tests are the only remaining safety net.
+- **Automatic splitting of large PRs.** AI can generate an 800-line diff in an hour. Humans can't review that meaningfully.
+- **A second reviewer above a risk threshold.** For high-risk changes, one reviewer isn't enough when the author was AI-assisted.
+
+Teams that skip this end up with codebases that pass tests, satisfy linters, and quietly rot. The regressions show up 6–12 months later, when accumulated complexity nobody understood becomes unmaintainable.
+
+## Security implications
+
+AI-generated code introduces risks that traditional review isn't calibrated for:
+
+- **Dependency choices.** AI tools favor popular libraries — including popular libraries with recent vulnerabilities. Automated SCA becomes more important, not less.
+- **Prompt-injected code.** Malicious content in documentation, READMEs, or comments can influence what an agentic tool writes. This is real, documented, and mostly ungoverned in 2026.
+- **Secret leakage.** AI tools have committed secrets to production repos. Pre-commit hooks and secret scanning are non-negotiable.
+- **License compliance.** AI-generated code sometimes closely mirrors training data under restrictive licenses. An ongoing enterprise concern with no clean answer yet.
+
+The platform team's responsibility in 2026: make AI-assisted development **safe by default**, not just accessible.
+
+## The platform team's role
+
+Teams that get this right do three things:
+
+1. **Provide a governed AI coding environment.** Approved tools, approved models, approved contexts. Free-for-all is not a strategy at enterprise scale.
+2. **Instrument AI-assisted code paths.** Detect which PRs were AI-authored, which agents were used, what outcomes resulted. You can't improve what you can't measure.
+3. **Publish a clear policy.** What tools are approved? What data can be shared with AI services? What review requirements apply to AI-authored code? Written down. Public.
+
+The 68% of platform teams with no policy aren't neutral. They're implicitly saying "figure it out yourselves" — and their engineers are, in ways that generate long-term risk.
+
+## What to do this quarter
+
+If your platform team has no AI coding policy, write one. Even a rough draft. It doesn't have to be perfect; it has to exist.
+
+If you have a policy but no enforcement or instrumentation, add both. Metrics precede improvement.
+
+If you have all three — policy, tools, instrumentation — you're ahead of 68% of your peers. Now think hard about the review process, because that's where the next class of issues will surface.
+
+Copilot was the training wheels. Agentic coding is the workflow. Platform engineering is what keeps it safe.

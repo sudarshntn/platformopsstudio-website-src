@@ -1,0 +1,70 @@
+---
+title: "Multi-Cluster Kubernetes: Strategies That Actually Scale"
+edition: 15
+date: 2026-09-07
+excerpt: "CNCF's 2026 fleet survey puts the median enterprise cluster count at 47, up from 12 in 2022. Most of those clusters shouldn't exist. The good reasons, the bad ones, and the identity problem that breaks every multi-cluster architecture around year three."
+tags: [Kubernetes, MultiCluster, PlatformEngineering, CloudNative, ServiceMesh, ClusterAPI]
+slug: edition-15-multi-cluster-kubernetes-strategies
+linkedInUrl: https://www.linkedin.com/pulse/multi-cluster-kubernetes-strategies-actually-scale-narayanan-hbqlc
+---
+
+The CNCF's 2026 fleet management survey found the median cluster count among large enterprises is now 47 — up from 12 in 2022. Most teams got there one cluster at a time, each addition justified by a Slack thread. Very few of those clusters would survive an architecture review.
+
+## When to add a cluster — and when you absolutely should not
+
+**Good reasons:**
+
+- **Blast radius isolation.** A failure in one cluster must not take the others with it.
+- **Regulatory boundaries.** Data residency or compliance scope that can't be satisfied by namespace separation.
+- **Scale limits.** You're actually hitting etcd, API server, or scheduler constraints — measured, not assumed.
+- **Team autonomy** where decision latency is the real bottleneck.
+
+**Bad reasons:**
+
+- Separating prod from everything else. Namespaces and network policy handle this.
+- A team wanting independence. That's usually platform defection wearing a technical costume.
+- "We need a staging environment." Same answer as prod separation.
+- A vendor recommended it without substantive justification.
+
+The 2026 guidance is blunt: adding a cluster should require a written architectural justification. Not a Slack conversation. A doc.
+
+## Topology options
+
+**Cluster-per-environment** (dev / staging / prod) is the most common pattern and the most over-adopted. In the majority of cases namespaces plus network policies do the same job with a fraction of the operational surface.
+
+**Cluster-per-tenant** is genuinely necessary for multi-tenant SaaS with hard isolation requirements. Be clear-eyed about the cost curve: operational overhead escalates sharply past roughly 50 tenants.
+
+**Cluster-per-region** is the most defensible of the three, because the driver is external — latency, data residency, or disaster recovery. Those are constraints you don't get to argue with.
+
+## The management plane
+
+- **Cluster API (CAPI)** — the CNCF standard for declarative cluster lifecycle. If you're managing more than a handful of clusters by hand, this is the migration to schedule.
+- **Crossplane** — extends the Kubernetes API to infrastructure beyond clusters. Pairs well with CAPI rather than competing with it.
+- **Karmada** — multi-cluster orchestration when you need real workload placement policy.
+- **Kubefed** — deprecated. Don't start anything new here.
+
+## Cross-cluster networking
+
+- **Istio multi-cluster.** Battle-tested, federated control planes, mTLS throughout. The heavyweight option that actually works.
+- **Cilium Cluster Mesh.** eBPF-based, better raw performance, newer operational track record.
+- **Linkerd multi-cluster.** The lightweight pick for teams who want the guarantees without Istio's complexity budget.
+- **No service mesh at all.** Viable at 2–5 clusters. Stops being viable shortly after.
+
+The factor that determines whether any of these succeed at scale is whether service identity works across cluster boundaries. Everything else is routing.
+
+## Identity and policy at scale
+
+- Centralized identity provider, federated via OIDC or SAML.
+- **SPIFFE/SPIRE** for cryptographic workload identity that survives the cluster boundary.
+- Policy-as-code — Kyverno or OPA — replicated through GitOps rather than applied per-cluster by hand.
+- Aggregated audit logs across the whole fleet, not per-cluster silos.
+
+The multi-cluster identity story is where most architectures break down at year three. The clusters work. The networking works. Then someone asks which workload called which service last Tuesday and nobody can answer across the fleet.
+
+## What to do this quarter
+
+Write the architectural justification for every cluster you currently run. The ones you can't justify are your consolidation backlog.
+
+Adopt Cluster API if you haven't — budget a quarter for the migration.
+
+And before you add cluster 48: solve cross-cluster service identity first. Adding clusters on top of an unsolved identity story is how you get to year three with an architecture nobody can reason about.

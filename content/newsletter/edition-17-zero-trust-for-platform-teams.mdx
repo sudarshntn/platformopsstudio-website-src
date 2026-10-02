@@ -1,0 +1,78 @@
+---
+title: "Zero Trust for Platform Teams: Beyond the Marketing"
+edition: 17
+date: 2026-09-21
+excerpt: "NIST SP 800-207 translated into five concrete platform requirements. If your platform doesn't do all five, you're not doing Zero Trust regardless of what your vendor's marketing says — plus a 90/180/365-day roadmap that actually lands."
+tags: [ZeroTrust, DevSecOps, SPIFFE, ServiceMesh, PlatformSecurity, PlatformEngineering]
+slug: edition-17-zero-trust-for-platform-teams
+linkedInUrl: https://www.linkedin.com/pulse/zero-trust-platform-teams-beyond-marketing-sudarshan-narayanan-e0qrc
+---
+
+"Zero Trust" has been a vendor slide for long enough that most platform engineers tune it out. That's a mistake — not because the marketing is right, but because the underlying NIST model translates into five very concrete platform requirements, and most platforms satisfy two of them.
+
+## The five requirements
+
+NIST SP 800-207, stripped of abstraction and translated into platform engineering terms:
+
+1. **Every workload has cryptographic identity.**
+2. **Every credential is short-lived and automatically rotated.**
+3. **Every service-to-service call uses authenticated encryption** (mTLS).
+4. **Every access decision runs through a policy engine.**
+5. **Every action is logged and centrally auditable.**
+
+If your platform doesn't do all five, you're not doing Zero Trust regardless of what your vendor's marketing says. That's not a purity test — each of the five closes a specific attack path, and a platform missing two of them has two open paths.
+
+## Workload identity is the thing that changed
+
+SPIFFE/SPIRE is the single biggest change in the Zero Trust story between 2022 and 2026. SPIFFE is now a CNCF Graduated project with first-class integration across the major service meshes.
+
+The shift matters because workload identity used to be the hard part. Humans had OIDC; services had a static secret in a Kubernetes manifest and a prayer. SPIFFE gives a workload a cryptographic identity that's attested at runtime, rotates on its own, and works across cluster boundaries — which is exactly the gap [Edition 15](/newsletter/edition-15-multi-cluster-kubernetes-strategies) flagged as the thing that breaks multi-cluster architectures at year three.
+
+## Credentials in 2026
+
+The pattern that mature platforms converge on:
+
+- **Humans** — OIDC / OAuth, sessions measured in 1 to 24 hours.
+- **Workloads** — SPIFFE identities rotated every 15 minutes to an hour.
+- **Databases and downstream systems** — dynamic credentials issued per-session from something like Vault.
+
+The target state this implies is the one worth naming explicitly: **no static credentials in Kubernetes secrets**. Not fewer. None.
+
+## Service mesh: the complexity objection is out of date
+
+"Service mesh is too complex" was an accurate read in 2020. It's an outdated one in 2026. With Istio's ambient mode, Linkerd, or Cilium, getting to strict mTLS with automatic certificate rotation is a two-quarter project — not the eighteen-month saga that gave the category its reputation.
+
+If the last time your team evaluated a mesh was before 2023, the evaluation is stale.
+
+## The roadmap
+
+**90 days**
+
+- Deploy SPIFFE/SPIRE workload identity.
+- Enable strict mTLS in the service mesh.
+- Audit every long-lived credential — inventory only, no migration yet.
+
+**180 days**
+
+- Migrate the top 20% of credentials to short-lived alternatives.
+- Integrate workload identity with the policy engine — OPA, Kyverno, or Cedar (see [Edition 12](/newsletter/edition-12-policy-as-code-opa-kyverno-cedar) for picking between them).
+- Centralize audit logs across clusters.
+
+**365 days**
+
+- Zero static credentials anywhere in the platform.
+- All service-to-service calls authenticated and encrypted by default.
+- A single centralized audit log stream.
+- Architecture that's compliance-ready rather than compliance-retrofitted.
+
+## Where implementations actually fail
+
+- **Static credentials hiding in plain sight** — Kubernetes secrets, environment variables, config files, CI variables. The inventory step in the 90-day block exists because teams consistently underestimate how many they have.
+- **The stale complexity objection.** Covered above; it's the single most common reason platforms stall at requirement three.
+- **Policy engines as write-only rule graveyards.** Rules get added, never reviewed, never removed. Without an owner and a lifecycle, the policy engine becomes a compliance prop rather than a control.
+
+## What to do this quarter
+
+Pick the inventory. Not the migration — the inventory. Count your long-lived credentials and write the number down somewhere your leadership can see it.
+
+Zero Trust is a direction, not a project with a completion date. But the direction only means something if you know where you're starting from.
