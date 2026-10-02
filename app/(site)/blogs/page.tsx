@@ -6,7 +6,7 @@ import { getAllBlogs } from "@/lib/content/load";
 export const metadata: Metadata = {
   title: "Blogs",
   description:
-    "Practical writing on Platform Engineering and DevSecOps — 14 posts, several cross-posted from Medium.",
+    "Practical writing on Platform Engineering and DevSecOps, several cross-posted from Medium.",
 };
 
 // ISR — rebuild the list at most once an hour so a new MDX file picked

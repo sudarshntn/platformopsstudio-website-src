@@ -1,0 +1,456 @@
+---
+title: "Your Models, Your Network: Building a Private LLM Platform on Azure AKS with vLLM on GPU Nodes"
+date: 2026-10-02
+excerpt: "A hands-on build: vLLM on a tainted GPU node pool inside your own VNet — OpenAI-compatible, autoscaled, secrets from Key Vault, weights cached on a PV, and nothing leaving your network."
+tags: [LLMOps, Kubernetes, AKS, Azure, AIInfrastructure, PlatformEngineering]
+slug: private-llm-platform-on-azure-aks-with-vllm
+mediumUrl: https://medium.com/@ramsudarsan/your-models-your-network-building-a-private-llm-platform-on-azure-aks-with-vllm-on-gpu-nodes-d92d0a493fb3
+---
+
+Every few weeks, someone on a platform team asks me the same question, usually in a slightly panicked tone: _“Legal won’t let us send customer data to a hosted model API. Can we run our own?”_
+
+The answer is yes, and it’s a lot less exotic than people assume. You don’t need a research cluster or a team of ML PhDs. You need a Kubernetes cluster, one GPU node pool, and a serving engine that doesn’t fall over under real traffic. That serving engine is [vLLM](https://github.com/vllm-project/vllm), and the cluster will be AKS.
+
+This is a build-along. By the end, you’ll have an OpenAI-compatible endpoint with the same request shape your developers already know, serving an open-weights model on an A100, living entirely inside your own virtual network. No tokens leaving the building. No per-request bill from a vendor. Just your model, on your hardware, behind your firewall.
+
+I’ll walk through the whole thing: the cluster, the GPU plumbing that trips everyone up, secrets done properly, model caching, the vLLM deployment itself, a private ingress, autoscaling that actually makes sense for GPUs, and the monitoring you’ll wish you’d set up _before_ the first incident. I’ll also tell you where I’ve watched this go sideways, because that’s the part the docs leave out.
+
+## What we’re actually building
+
+Here’s the shape of it before we touch a terminal.
+
+A few deliberate choices are baked into that picture, and they matter:
+
+**The GPU node pool is separate and tainted.** GPUs are the single most expensive line item you will ever put in a Kubernetes cluster. You do not want a random logging sidecar scheduling onto an A100 node and holding it hostage. So the GPU pool gets a taint, and only vLLM with a matching toleration can land there. Everything else (ingress, monitoring, the autoscaler) runs on cheap CPU nodes.
+
+**Nothing has a public endpoint.** The load balancer is internal. The ingress answers only on a private IP reachable over your VPN or ExpressRoute. The whole point of self-hosting is that the data stays put, and a public LoadBalancer IP quietly undermines that on day one.
+
+**Model weights are cached, not re-downloaded.** An 8B model in fp16 is roughly 16 GB. A 70B model is north of 140 GB. If every pod restart pulls that from Hugging Face again, your cold starts will be measured in tens of minutes, and your egress bill will make someone cry. We mount a persistent volume and download once.
+
+**Secrets come from Key Vault.** Your Hugging Face token and your API key never sit in a YAML file in Git. The Secrets Store CSI driver pulls them at runtime.
+
+That’s the design. Let’s build it.
+
+## Prerequisites
+
+You’ll need the `az` CLI, `kubectl`, and `helm` installed, plus an Azure subscription where you own (or can befriend someone who owns) the quota knobs. A Hugging Face account with a token is required for gated models like Llama 3.1; if you'd rather skip that dance, Qwen2.5-7B-Instruct is ungated and swaps in cleanly.
+
+One hard requirement that deserves its own paragraph: **GPU quota.** New subscriptions have a GPU quota of exactly zero for most families. You cannot create an A100 node pool until Microsoft approves an increase, and that approval isn't instant; it can take anywhere from a few hours to a couple of days, depending on region and demand. Check it _now_, before you’ve written a line of config:
+```bash
+az vm list-usage --location eastus2 -o table | grep -i NCADSA100
+```
+
+If the limit column reads 0, open a quota request in the portal under **Subscriptions → Usage + quotas** and go get a coffee. I have seen more than one “quick POC” die right here because nobody checked until Friday afternoon.
+
+### Step 1 — The cluster and the GPU node pool
+
+We start with a standard AKS cluster on a small CPU pool, placed inside a VNet we control. The system pool runs the boring-but-essential stuff; it never sees a GPU.
+```bash
+az group create -n rg-private-llm -l eastus2
+
+az network vnet create -g rg-private-llm -n vnet-llm \
+  --address-prefixes 10.42.0.0/16 \
+  --subnet-name snet-aks --subnet-prefixes 10.42.1.0/24
+SUBNET_ID=$(az network vnet subnet show -g rg-private-llm \
+  --vnet-name vnet-llm -n snet-aks --query id -o tsv)
+
+az aks create \
+  --resource-group rg-private-llm --name aks-private-llm \
+  --node-count 2 --node-vm-size Standard_D4s_v5 --nodepool-name system \
+  --vnet-subnet-id "$SUBNET_ID" \
+  --network-plugin azure --network-policy azure \
+  --enable-cluster-autoscaler --min-count 1 --max-count 3 \
+  --enable-managed-identity \
+  --enable-addons azure-keyvault-secrets-provider --enable-secret-rotation \
+  --generate-ssh-keys
+```
+
+Now the interesting part: the GPU pool
+```bash
+az aks nodepool add \
+  --resource-group rg-private-llm --cluster-name aks-private-llm \
+  --name gpupool \
+  --node-vm-size Standard_NC24ads_A100_v4 \
+  --node-count 1 \
+  --enable-cluster-autoscaler --min-count 0 --max-count 3 \
+  --node-osdisk-size 256 \
+  --node-taints "sku=gpu:NoSchedule" \
+  --labels nodepool=gpu
+```
+
+Three details in that command earn their keep.
+
+Standard_NC24ads_A100_v4 Gives you one A100 80GB, plenty for any 7B/8B model and enough for a quantized 70B if you're careful. If budget is tight, Standard_NV36ads_A10_v5 (an A10 with 24 GB) runs a 7B model comfortably for a fraction of the hourly cost. Pick your fighter based on the model you actually need, not the biggest one you can find.
+
+--min-count 0 Let the pool scale all the way down to no nodes when nobody's using it. This is the single biggest cost lever you have. An idle A100 node burning money overnight because someone ran one test at 4 p.m. is a conversation you don't want to have with finance. The trade-off is a cold start on the next request, which we'll cover later.
+
+The taint sku=gpu:NoSchedule is your fence. Nothing schedules here unless it explicitly tolerates that taint. We'll give vLLM, and only vLLM, the matching toleration.
+
+Pull your credentials and confirm the GPU node reports in:
+```bash
+az aks get-credentials -g rg-private-llm -n aks-private-llm --overwrite-existing
+kubectl get nodes -L nodepool
+```
+
+### Step 2 — Making Kubernetes actually see the GPU
+
+Here’s the gotcha that eats an afternoon for almost everyone the first time: **the GPU node exists, the driver is installed, and Kubernetes still thinks there’s no GPU.** You’ll do a kubectl describe node and the nvidia.com/gpu resource simply isn't there.
+
+The missing piece is the NVIDIA **device plugin,** a DaemonSet that talks to the driver and advertises the GPU as a schedulable resource. AKS installs the driver on the GPU image, but it does_n't_ install the device plugin. That part is on you.
+```yaml
+# nvidia-device-plugin.yaml (abbreviated — full version in the repo)
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      tolerations:
+        - key: sku            # tolerate OUR gpu taint, or it never schedules
+          operator: Equal
+          value: gpu
+          effect: NoSchedule
+      nodeSelector:
+        nodepool: gpu
+      containers:
+        - name: nvidia-device-plugin-ctr
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.16.2
+```
+
+The toleration is the catch. If you grab the stock device-plugin manifest off the internet, it won’t tolerate your custom taint, so it’ll refuse to run on the exact nodes it’s meant to serve, and you’ll stare at a node with no advertised GPU, wondering what you did wrong. Add the toleration.
+```bash
+kubectl apply -f k8s/nvidia-device-plugin.yaml
+kubectl describe node -l nodepool=gpu | grep -A3 Allocatable
+```
+
+When you see nvidia.com/gpu: 1 in Allocatable, the scheduler can finally place GPU workloads. That's the milestone. Everything after this is comparatively easy.
+
+For production, the **NVIDIA GPU Operator** is the mature option. It manages drivers, the device plugin, node feature discovery, and DCGM metrics as a single Helm release. For a first build, the standalone device plugin keeps the moving parts visible, which is why I’m using it here.
+
+### Step 3 — Secrets, the way you won’t regret later
+
+Your Hugging Face token is a credential. Your API key is a credential. Neither belongs in a Git repo, a ConfigMap, or a Slack message. We’ll put both in Key Vault and let the Secrets Store CSI driver surface them to the pod at runtime.
+
+The azure-keyvault-secrets-provider addon is already enabled (we passed it to az aks create). Create a vault, store the secrets, and grant the addon's identity read access:
+```bash
+az keyvault create -g rg-private-llm -n kv-llm-demo \
+  --enable-rbac-authorization true
+
+az keyvault secret set --vault-name kv-llm-demo --name hf-token --value "hf_xxx..."
+az keyvault secret set --vault-name kv-llm-demo --name vllm-api-key \
+  --value "$(openssl rand -hex 24)"
+
+IDENTITY_OBJECT_ID=$(az aks show -g rg-private-llm -n aks-private-llm \
+  --query addonProfiles.azureKeyvaultSecretsProvider.identity.objectId -o tsv)
+az role assignment create --assignee "$IDENTITY_OBJECT_ID" \
+  --role "Key Vault Secrets User" \
+  --scope $(az keyvault show -g rg-private-llm -n kv-llm-demo --query id -o tsv)
+```
+
+Then a SecretProviderClass ties it together. The clever bit is secretObjects: it tells the driver to mirror the Key Vault values into a regular Kubernetes Secret, so the vLLM container can read them as plain environment variables while the source of truth stays in the vault.
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: llm-kv
+  namespace: llm
+spec:
+  provider: azure
+  secretObjects:
+    - secretName: llm-secrets
+      type: Opaque
+      data:
+        - { objectName: hf-token,     key: HUGGING_FACE_HUB_TOKEN }
+        - { objectName: vllm-api-key, key: VLLM_API_KEY }
+  parameters:
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: "<clientID>"     # printed by the setup script
+    keyvaultName: "kv-llm-demo"
+    tenantId: "<tenantId>"
+    objects: |
+      array:
+        - |
+          objectName: hf-token
+          objectType: secret
+        - |
+          objectName: vllm-api-key
+          objectType: secret
+```
+
+One non-obvious rule: the sync to a Kubernetes Secret only happens when a **pod actually mounts the CSI volume**. Define it but forget to mount it, and llm-secrets never appears. The deployment in the next step mounts it; don't remove that.
+
+### Step 4 — Where the model lives
+
+Download the weights once, keep them on a persistent volume, and every subsequent pod starts in seconds instead of minutes. This is non-negotiable for anything bigger than a toy.
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-cache
+  namespace: llm
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: azurefile-csi-premium
+  resources:
+    requests:
+      storage: 200Gi
+```
+
+I’m using Azure Files Premium here because it’s ReadWriteMany multiple vLLM replicas can share one cache, so you download the model exactly once no matter how far you scale out. If you're certain you'll only ever run a single replica, an azuredisk volume (ReadWriteOnce) is cheaper and a touch faster. For very large models and many replicas, blob storage via blobfuse is worth a look. Match the storage to the access pattern; don't cargo-cult mine.
+
+### Step 5 — Deploying vLLM
+
+This is the heart of it. Let me show the deployment, then walk through the parts that matter.
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: vllm, namespace: llm, labels: { app: vllm } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: vllm } }
+  template:
+    metadata: { labels: { app: vllm } }
+    spec:
+      nodeSelector: { nodepool: gpu }
+      tolerations:
+        - { key: sku, operator: Equal, value: gpu, effect: NoSchedule }
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:v0.6.6
+          args:
+            - "--model=meta-llama/Llama-3.1-8B-Instruct"
+            - "--served-model-name=llama3.1-8b"
+            - "--gpu-memory-utilization=0.90"
+            - "--max-model-len=8192"
+            - "--max-num-seqs=256"
+          ports: [{ containerPort: 8000, name: http }]
+          env:
+            - { name: HF_HOME, value: /models }
+            - name: HUGGING_FACE_HUB_TOKEN
+              valueFrom: { secretKeyRef: { name: llm-secrets, key: HUGGING_FACE_HUB_TOKEN } }
+            - name: VLLM_API_KEY
+              valueFrom: { secretKeyRef: { name: llm-secrets, key: VLLM_API_KEY } }
+          resources:
+            limits: { nvidia.com/gpu: 1 }
+            requests: { cpu: "6", memory: 48Gi }
+          volumeMounts:
+            - { name: model-cache, mountPath: /models }
+            - { name: dshm, mountPath: /dev/shm }
+            - { name: kv, mountPath: /mnt/secrets-store, readOnly: true }
+          startupProbe:
+            httpGet: { path: /health, port: 8000 }
+            periodSeconds: 10
+            failureThreshold: 60        # ~10 min grace to load the model
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+      volumes:
+        - { name: model-cache, persistentVolumeClaim: { claimName: model-cache } }
+        - name: dshm
+          emptyDir: { medium: Memory, sizeLimit: 16Gi }
+        - name: kv
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes: { secretProviderClass: llm-kv }
+```
+
+The things that will bite you if you skip them:
+
+**nvidia.com/gpu: 1 As a limit, not a request.** GPUs are an _extended resource_ in Kubernetes — you can't fractionally share one, and you must set it under limits. One GPU, one replica, full stop (unless you're doing time-slicing or MIG, which is a separate rabbit hole).
+
+**/dev/shm backed by memory.** vLLM leans on shared memory, and the default 64 MB /dev/shm inside a container is laughably small. The moment you try tensor parallelism across multiple GPUs, you'll get a cryptic crash that tells you nothing. The emptyDir with medium: Memory fixes it. Set it even for single-GPU; it costs you nothing and saves a debugging session.
+
+**--gpu-memory-utilization=0.90.** vLLM pre-allocates GPU memory for its KV cache up front — that's _why_ it's fast. Set this too high and you'll OOM at load; too low and you waste the pricey VRAM you're paying for. 0.90 is a sane default on a dedicated GPU. Lower it if other processes share the card.
+
+**--max-model-len.** The context window you advertise. A bigger context means a bigger KV cache, which leaves less room for concurrent requests. 8192 is a reasonable starting point for an 8B model on an A100. Crank it to 128k and watch your max concurrency collapse. Tune it to what your workload genuinely needs.
+
+**That startup probe matters.** The first boot downloads ~16 GB and loads it into VRAM. On a cold cache, that’s several minutes, and without a generous startupProbe Kubernetes will kill the pod for failing its liveness check before it ever finishes loading, then retry, re-download, and fail again, forever. The 60-failure grace window (ten minutes) gives it room to breathe on first launch. On a warm cache, it's ready in well under a minute.
+
+Here’s the whole startup sequence, because knowing where the minutes go makes the waiting a lot less stressful:
+
+Apply it and watch:
+```bash
+kubectl apply -f k8s/00-namespace.yaml
+kubectl apply -f k8s/01-secretprovider.yaml
+kubectl apply -f k8s/02-pvc.yaml
+kubectl apply -f k8s/03-deployment.yaml
+kubectl -n llm logs -f deploy/vllm     # watch it download and load
+```
+
+When the logs settle on Uvicorn running on http://0.0.0.0:8000you have a model server.
+
+### Step 6 — A private front door
+
+A ClusterIP service points at the pods; an internal ingress exposes it on the VNet and nowhere else.
+```yaml
+apiVersion: v1
+kind: Service
+metadata: { name: vllm, namespace: llm }
+spec:
+  type: ClusterIP
+  selector: { app: vllm }
+  ports: [{ name: http, port: 80, targetPort: 8000 }]
+```
+
+Install ingress-nginx with the annotation that makes Azure provision an _internal_ load balancer with a private IP, not a public one:
+```bash
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx --create-namespace \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"=true
+```
+
+The ingress itself needs long proxy timeouts, or streaming responses get guillotined mid-sentence:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vllm
+  namespace: llm
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: llm.internal.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: vllm, port: { number: 80 } } }
+```
+
+Authentication is handled by vLLM itself; it enforces the VLLM_API_KEY we injected as a Bearer token, rejecting anything without it. For a stricter setup, front it with oauth2-proxy and your corporate IdP, but a shared key over a private network is a perfectly reasonable v1.
+
+### Step 7 — Does it work?
+
+Because vLLM speaks the OpenAI API, your developers change exactly one thing: the base URL. Every OpenAI SDK, in every language, works out of the box.
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://llm.internal.example.com/v1",
+    api_key="<the key from Key Vault>",
+)
+
+stream = client.chat.completions.create(
+    model="llama3.1-8b",
+    messages=[{"role": "user", "content": "Explain continuous batching in one line."}],
+    stream=True,
+)
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="", flush=True)
+```
+
+That model="llama3.1-8b" matches the --served-model-name from the deployment, not the full Hugging Face path. Small thing, easy to miss.
+
+For the mental model of what each hop is doing when that request lands:
+
+vLLM's payoff is in that “continuous batching” box. Instead of processing requests one at a time, it interleaves many in-flight sequences on the GPU and recycles slots as soon as a sequence finishes. That’s what lets a single A100 serve dozens of concurrent users without each one waiting in line. You get this for free just by using vLLM, but it’s worth understanding because it’s also _why_ queue depth is the right signal for autoscaling.
+
+### Step 8 — Autoscaling that fits GPUs
+
+CPU-based autoscaling is useless here. A vLLM pod can sit near 100% GPU utilization while its CPU barely registers, so an HPA watching CPU will never scale when you need it and might scale when you don’t. The signal that actually means “I’m overloaded” is **queued requests,** and vLLM exposes exactly that as vllm:num_requests_waiting.
+
+We use KEDA to scale on it:
+```yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: vllm, namespace: llm }
+spec:
+  scaleTargetRef: { name: vllm }
+  minReplicaCount: 1
+  maxReplicaCount: 4
+  cooldownPeriod: 300
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kps-kube-prometheus-stack-prometheus.monitoring.svc:9090
+        query: sum(vllm:num_requests_waiting{namespace="llm"})
+        threshold: "5"
+```
+
+When queued requests climb past the threshold, KEDA adds a replica; the cluster autoscaler notices the new pod can’t be scheduled (no free GPU) and provisions another GPU node to hold it. Two autoscalers cooperating: KEDA for pods, cluster autoscaler for nodes.
+
+A word of caution on scaling to zero. Setting minReplicaCount: 0 and the GPU pool's --min-count 0 is wonderful for the bill and brutal for first-request latency. From a cold stop, the next request waits for a GPU node to provision (a few minutes), the driver and device plugin to come up, and the model to load. That's easily five-plus minutes for the unlucky first caller. For an internal batch tool, totally fine. For an interactive chat experience, keep at least one replica warm and let it hurt the budget a little. The cooldownPeriod five-minute timeout also stops the system from thrashing spinning GPU nodes up and down repeatedly is both slow and, because of per-second billing minimums, oddly expensive.
+
+### Step 9 — Knowing what your GPU is doing
+
+vLLM publishes a rich /metrics endpoint, and you want it scraped from the very first day, not bolted on after the first "the model is slow" ticket. A ServiceMonitor wires it into the Prometheus stack we installed:
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vllm
+  namespace: llm
+  labels: { release: kps }
+spec:
+  selector: { matchLabels: { app: vllm } }
+  endpoints: [{ port: http, path: /metrics, interval: 15s }]
+```
+
+The metrics worth putting on a Grafana dashboard before anything else: vllm:num_requests_running and vllm:num_requests_waiting (your real-time load and the autoscaling signal), vllm:gpu_cache_usage_perc (how close the KV cache is to full; if this pins at 100%, you need more GPU or a smaller context), and the time-to-first-token and inter-token latency histograms, which are what your users actually _feel_. Pair those with NVIDIA DCGM metrics for raw GPU utilization, temperature, and power, and you can tell at a glance whether a slowdown is a saturated model or a sick node.
+
+There’s a ready-made Grafana dashboard in the companion repo (observability/grafana-vllm-dashboard.json) wired to exactly these metrics. Import it, point it at your Prometheus datasource, and you've got the serving overview, latency percentiles, throughput, and GPU panels on screen in under a minute.
+
+### The things nobody warns you about
+
+A few hard-won notes, so you learn them from me instead of from production.
+
+**Cost is a GPU problem, not a Kubernetes problem.** An A100 node runs well over a thousand dollars a month if you leave it on around the clock. The scale-to-zero config above is the difference between a reasonable bill and a budget meeting. Also: an idle pod still holds its whole GPU. One stuck replica can quietly cost you a node’s worth of money doing nothing. Alert on it.
+
+**Pin your image tag.** vllm/vllm-openai:latest will eventually pull a version with a different default, a changed flag, or a regression, and it'll happen during a deploy you didn't think was risky. Pin to a tag you've tested. Upgrade deliberately.
+
+**Gated models need two things, not one.** For Llama, you need a valid HF token, _and_ you must have accepted the license on the model’s Hugging Face page with that same account. People set the token, skip the click-through, and get a baffling 401 at download time. If you’d rather not deal with it, Qwen2.5–7B-Instruct is ungated and swaps in by changing one line.
+
+**The first****describe node with no GPU is almost always the device plugin.** If the node is up but nvidia.com/gpu is missing from Allocatable, 90% of the time the plugin DaemonSet didn't schedule, usually because it doesn't tolerate your taint. Check that before you suspect the driver.
+
+**Measure before you tune.** max-model-len, gpu-memory-utilization, and max-num-seqs interact in ways that aren't obvious. Change one, run a realistic load test, read the KV-cache-usage metric, repeat. Guessing leads to either OOM crashes or a GPU running at a third of what you paid for.
+
+### Where to go from here
+
+What you’ve got is a genuinely private, OpenAI-compatible LLM endpoint on hardware you control, with autoscaling, secrets management, and observability that won’t embarrass you. That’s a real platform, not a demo.
+
+The obvious next steps, roughly in the order I’d tackle them: put an embeddings model on a second deployment, and you’ve got the serving half of a RAG stack; add a lightweight router (LiteLLM is a good one) in front if you want to serve several models through one endpoint with per-team quotas; and when a single A100 stops being enough, reach for tensor parallelism across multiple GPUs, which is exactly why we sized /dev/shm correctly from the start.
+
+The full, working source scripts, manifests, Terraform, and a test client are in the companion repository. Clone it, change the variables at the top, and you can have your own private model serving traffic this afternoon. Assuming your GPU quota came through.
+
+### Appendix: Turning this into a RAG stack
+
+Serving a chat model is useful. Serving a chat model that can answer questions about _your_ documents is what people actually want. The good news: you already have most of the platform. RAG (retrieval-augmented generation) just needs a second model and a vector store, and that second model runs on the same infrastructure.
+
+The second model is an **embedding** model, and vLLM serves it the same way it serves chat: same image, same pattern, just the --task=embed flag and a model like bge-large:
+```yaml
+# k8s/07-embeddings-deployment.yaml (abbreviated)
+containers:
+  - name: vllm
+    image: vllm/vllm-openai:v0.6.6
+    args:
+      - "--model=BAAI/bge-large-en-v1.5"
+      - "--served-model-name=bge-large"
+      - "--task=embed"                 # serve /v1/embeddings, not chat
+      - "--gpu-memory-utilization=0.30"
+```
+
+Now you have two OpenAI-compatible endpoints inside the VNet: /v1/chat/completions for generation and /v1/embeddings for vectors. The RAG loop is then boringly standard, which is exactly what you want:
+```python
+def ask(question):
+    # 1. embed the question with the private embedding model
+    # 2. retrieve the top-k most similar chunks from your vector DB
+    context = "\n".join(f"- {c}" for c in retrieve(question))
+    # 3. augment: hand those chunks to the chat model as grounding
+    resp = llm.chat.completions.create(
+        model="llama3.1-8b",
+        messages=[
+            {"role": "system", "content": "Answer using ONLY the context provided."},
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
+        ],
+    )
+    return resp.choices[0].message.content
+```
+
+A full runnable version (with an in-memory search you can swap for Qdrant, pgvector, or Azure AI Search) ships as client/rag_example.py in the [repo](https://github.com/PlatformOpsStudio/private-llm-aks-bundle).
+
+One honest note on cost. An embedding model barely registers on an A100; dedicating a whole one to it is wasteful. In production, you’d give it a cheaper A10 node pool, or share a single GPU across both models with time-slicing or MIG. I kept it on the GPU pool here for clarity, but that’s the first thing I’d optimize once the stack is real. The important part is the shape: both models private, both behind your API key, both inside your network, and not a single document leaving the building on its way to an answer.
