@@ -8,6 +8,7 @@ import { expect, test } from "@playwright/test";
 const routes: Array<{ path: string; h1: RegExp }> = [
   { path: "/", h1: /Platform Engineering|DevSecOps/i },
   { path: "/blogs", h1: /^Blogs$/ },
+  { path: "/videos", h1: /On Screen/i },
   { path: "/newsletter", h1: /Platform Pulse/i },
   { path: "/contact", h1: /Connect and Collaborate/i },
   { path: "/privacy-policy", h1: /Privacy/ },

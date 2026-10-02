@@ -7,7 +7,15 @@ import { expect, test } from "@playwright/test";
  * bends can be added to `disableRules` with a written justification in
  * docs/a11y.md — none right now.
  */
-const routes = ["/", "/blogs", "/newsletter", "/contact", "/privacy-policy", "/legal-notice"];
+const routes = [
+  "/",
+  "/blogs",
+  "/videos",
+  "/newsletter",
+  "/contact",
+  "/privacy-policy",
+  "/legal-notice",
+];
 
 for (const path of routes) {
   test(`axe: ${path}`, async ({ page }) => {

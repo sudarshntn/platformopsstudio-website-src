@@ -15,6 +15,7 @@ export type NavItem = {
 export const primaryNav: readonly NavItem[] = [
   { label: "Home", href: "/", matchExact: true },
   { label: "Blogs", href: "/blogs" },
+  { label: "Videos", href: "/videos" },
   { label: "Newsletter", href: "/newsletter" },
   { label: "Contact", href: "/contact" },
 ];
